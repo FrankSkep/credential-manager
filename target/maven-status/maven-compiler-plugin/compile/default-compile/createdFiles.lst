@@ -23,6 +23,7 @@ frank\password_manager\UI\AgregarPassPNL$3.class
 frank\password_manager\UI\EditPassPNL.class
 frank\password_manager\UI\RegistrarPNL.class
 frank\password_manager\UI\DashboardPNL$4.class
+frank\password_manager\Utils\ConfigManager.class
 frank\password_manager\Database\DatabaseConnection.class
 frank\password_manager\UI\DashboardPNL$9.class
 frank\password_manager\Models\User.class

@@ -1,8 +1,15 @@
 package frank.password_manager;
 
+import frank.password_manager.Database.DatabaseConnection;
 import frank.password_manager.UI.IniciarSesionPNL;
 import frank.password_manager.UI.RegistrarPNL;
+import frank.password_manager.Utils.ConfigManager;
 import frank.password_manager.Utils.Tools;
+import java.io.File;
+import java.io.IOException;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Password_Manager extends javax.swing.JFrame {
 
@@ -10,6 +17,8 @@ public class Password_Manager extends javax.swing.JFrame {
         initComponents();
 
         setLocationRelativeTo(null);
+
+        initializeDbFile();
 
         if (Tools.primerAcceso()) {
             Tools.changePanel(new RegistrarPNL(), contenidoPNL);
@@ -100,6 +109,67 @@ public class Password_Manager extends javax.swing.JFrame {
                 new Password_Manager().setVisible(true);
             }
         });
+    }
+
+    // Método que pide al usuario que seleccione o cree una base de datos
+    private String promptUserForDatabase() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Seleccionar o crear base de datos");
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        // Filtro para solo mostrar archivos .db
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de base de datos (.db)", "db");
+        fileChooser.setFileFilter(filter);
+
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+
+            // Asegurarse de que el archivo tenga la extensión .db
+            if (!selectedFile.getName().toLowerCase().endsWith(".db")) {
+                selectedFile = new File(selectedFile.getAbsolutePath() + ".db");
+            }
+
+            if (!selectedFile.exists()) {
+                // Si el archivo no existe, preguntar si desea crearlo
+                int option = JOptionPane.showConfirmDialog(null, "El archivo no existe. ¿Deseas crearlo?", "Crear Base de Datos", JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    try {
+                        if (selectedFile.createNewFile()) {
+                            JOptionPane.showMessageDialog(null, "Base de datos creada con éxito.");
+                            return selectedFile.getAbsolutePath();
+                        }
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Error al crear la base de datos: " + e.getMessage());
+                    }
+                }
+            } else {
+                return selectedFile.getAbsolutePath();
+            }
+        }
+        return null;
+    }
+
+    // Inicializa la base de datos
+    private void initializeDbFile() {
+        // Cargar la ruta de la base de datos de la configuración
+        String dbPath = ConfigManager.loadDatabasePath();
+
+        if (dbPath == null || dbPath.isEmpty() || !Tools.isDatabaseFileExists(dbPath)) {
+            // Si no hay una base de datos guardada o si el archivo no existe, preguntar al usuario
+            dbPath = promptUserForDatabase();
+        }
+
+        if (dbPath != null) {
+            // Guardar la ruta seleccionada para futuros usos
+            ConfigManager.saveDatabasePath(dbPath);
+
+            // Inicializar la conexión con la base de datos
+            DatabaseConnection.initializeDatabase(dbPath);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se seleccionó una base de datos. La aplicación se cerrará.");
+            System.exit(0);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

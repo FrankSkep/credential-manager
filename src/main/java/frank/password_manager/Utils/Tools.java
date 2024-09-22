@@ -6,6 +6,7 @@ import frank.password_manager.Models.Password;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,6 +49,12 @@ public class Tools {
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    // Método para verificar si el archivo de la base de datos existe
+    public static boolean isDatabaseFileExists(String dbPath) {
+        File dbFile = new File(dbPath);
+        return dbFile.exists();
     }
 
     public static Object getUserOrNot() {

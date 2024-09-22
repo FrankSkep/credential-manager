@@ -21,7 +21,7 @@ public class DatabaseInitializer {
                 + "service_name TEXT NOT NULL, "
                 + "username TEXT NOT NULL, "
                 + "password TEXT NOT NULL, "
-                + "category TEXT NOT NULL UNIQUE)";
+                + "category TEXT NOT NULL)";
 
         try (Statement stmt = conn.createStatement()) {
             // Ejecutar las sentencias SQL para ambas tablas

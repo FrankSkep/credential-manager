@@ -8,16 +8,20 @@ import java.sql.SQLException;
 public class DatabaseConnection {
 
     private static HikariDataSource dataSource;
+    private static String databasePath; // Ruta dinámica de la base de datos
 
-    public static void initializeDatabase() {
+    // Método para inicializar la base de datos con la ruta dinámica
+    public static void initializeDatabase(String dbPath) {
+        databasePath = dbPath;
+
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:sqlite:src/main/resources/passwords.db");
+        config.setJdbcUrl("jdbc:sqlite:" + databasePath);
         config.setMaximumPoolSize(3);
         config.setPoolName("HikariSQLitePool");
 
         dataSource = new HikariDataSource(config);
 
-        // Crear las tablas después de inicializar la conexión
+        // Crear las tablas después de inicializar la conexión si es necesario
         try (Connection conn = dataSource.getConnection()) {
             DatabaseInitializer.initializeTables(conn);
         } catch (SQLException e) {
@@ -27,7 +31,7 @@ public class DatabaseConnection {
 
     public static Connection getConnection() throws SQLException {
         if (dataSource == null) {
-            initializeDatabase();
+            throw new SQLException("La base de datos no ha sido inicializada.");
         }
         return dataSource.getConnection();
     }
@@ -37,4 +41,9 @@ public class DatabaseConnection {
             dataSource.close();
         }
     }
+
+    public static String getDatabasePath() {
+        return databasePath;
+    }
+
 }

@@ -1,21 +1,23 @@
 package frank.password_manager.UI;
 
 import frank.password_manager.DAO.PasswordDAO;
+import frank.password_manager.DAO.UserDAO;
 import frank.password_manager.Database.DatabaseConnection;
 import frank.password_manager.Models.Password;
+import frank.password_manager.Utils.ConfigManager;
 import frank.password_manager.Utils.Tools;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class DashboardPNL extends javax.swing.JPanel {
 
@@ -28,9 +30,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         dao = PasswordDAO.getInstance();
 
         try {
-            passwordList = dao.getAllPasswords();
             initializeDashboard();
-
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error. " + e.toString());
         }
@@ -75,6 +75,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        currentDBLBL = new javax.swing.JLabel();
 
         tablePasswords.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -134,7 +135,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         });
 
         addBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        addBTN.setText("Agregar nueva");
+        addBTN.setText("Agregar");
         addBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addBTNActionPerformed(evt);
@@ -153,7 +154,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         });
 
         importBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        importBTN.setText("Importar");
+        importBTN.setText("Cambiar base de datos");
         importBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 importBTNActionPerformed(evt);
@@ -174,6 +175,8 @@ public class DashboardPNL extends javax.swing.JPanel {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Categoria");
 
+        currentDBLBL.setText("Archivo actual:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -181,21 +184,12 @@ public class DashboardPNL extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(88, 88, 88)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(152, 152, 152)
-                        .addComponent(importBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(exportBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(addBTN)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(addBTN)
+                        .addGap(12, 12, 12)
                         .addComponent(editBTN)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(deleteBTN)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(filtroBTN)
@@ -209,15 +203,26 @@ public class DashboardPNL extends javax.swing.JPanel {
                                 .addComponent(comboboxCateg, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(28, 28, 28)
-                                .addComponent(jLabel3)))))
+                                .addComponent(jLabel3))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 210, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(currentDBLBL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(importBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(exportBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(89, 89, 89))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(51, 51, 51)
+                .addGap(29, 29, 29)
+                .addComponent(currentDBLBL)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addBTN)
                     .addComponent(importBTN)
                     .addComponent(exportBTN)
                     .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -230,12 +235,17 @@ public class DashboardPNL extends javax.swing.JPanel {
                     .addComponent(jLabel3))
                 .addGap(5, 5, 5)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(editBTN)
-                    .addComponent(deleteBTN)
                     .addComponent(comboboxCateg, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboboxService, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(filtroBTN))
                 .addContainerGap(28, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addBTN)
+                    .addComponent(editBTN)
+                    .addComponent(deleteBTN))
+                .addGap(36, 36, 36))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -329,50 +339,100 @@ public class DashboardPNL extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_deleteBTNActionPerformed
 
-    private void importBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importBTNActionPerformed
-        JFileChooser fileChooser = new JFileChooser();
-        int returnValue = fileChooser.showOpenDialog(this);
 
+    private void importBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importBTNActionPerformed
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Seleccionar nueva base de datos");
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de base de datos (.db)", "db");
+        fileChooser.setFileFilter(filter);
+
+        int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            File tempFile = new File("src/main/resources/temp_passwords.db"); // Archivo temporal
 
-            try {
-                // Cerrar conexiones a la base de datos
-                DatabaseConnection.close();
+            if (!selectedFile.getName().toLowerCase().endsWith(".db")) {
+                selectedFile = new File(selectedFile.getAbsolutePath() + ".db");
+            }
 
-                // Copiar el archivo seleccionado a un archivo temporal
-                Files.copy(selectedFile.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            if (selectedFile.exists()) {
+                // Solicitar credenciales
+                String[] credentials = showCredentialDialog();
+                if (credentials != null) {
+                    String username = credentials[0];
+                    String password = credentials[1];
 
-                // Reemplazar el archivo original con el temporal
-                Files.move(tempFile.toPath(), new File("src/main/resources/passwords.db").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    // Cerrar la conexión actual
+                    DatabaseConnection.close();
 
-                // Reiniciar la conexión a la base de datos
-                DatabaseConnection.initializeDatabase();
+                    // Guardar la ruta de la nueva base de datos temporalmente
+                    String dbPath = selectedFile.getAbsolutePath();
+                    
+                    // Inicializar la nueva base de datos
+                    DatabaseConnection.initializeDatabase(dbPath);
 
-                try {
-                    initializeDashboard();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Error : " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    // Autenticación con la nueva base de datos
+                    UserDAO userDAO = new UserDAO();
+                    if (userDAO.authenticateUser(username, password)) {
+                        // Si la autenticación es exitosa, guardar la nueva ruta
+                        ConfigManager.saveDatabasePath(dbPath);
+
+                        // Recargar datos de la nueva base de datos
+                        try {
+                            initializeDashboard();
+                            JOptionPane.showMessageDialog(null, "Base de datos cambiada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Error al inicializar el dashboard: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        // Si las credenciales son incorrectas, volver a cerrar la conexión
+                        DatabaseConnection.close();
+
+                        // Revertir a la base de datos anterior
+                        DatabaseConnection.initializeDatabase(ConfigManager.loadDatabasePath());
+                        try {
+                            initializeDashboard(); // Volver a cargar el dashboard
+                        } catch (Exception e) {
+                        }
+
+                        JOptionPane.showMessageDialog(null, "Credenciales incorrectas. Se mantiene en la base de datos actual.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-
-                JOptionPane.showMessageDialog(this, "Base de datos importada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Error al importar la base de datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } finally {
-                // Eliminar el archivo temporal si existe
-                if (tempFile.exists()) {
-                    tempFile.delete();
-                }
+            } else {
+                JOptionPane.showMessageDialog(null, "El archivo seleccionado no existe.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_importBTNActionPerformed
+
+    private String[] showCredentialDialog() {
+        JTextField userField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+
+        Object[] message = {
+            "Usuario:", userField,
+            "Contraseña:", passwordField
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message, "Ingresar Credenciales", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            return new String[]{userField.getText(), new String(passwordField.getPassword())};
+        }
+        return null; // Si se cancela
+    }
+
 
     private void searchTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTFActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchTFActionPerformed
 
     private void initializeDashboard() throws Exception {
+        System.gc();
+
+        currentDBLBL.setText("Actual: " + getDatabaseName(DatabaseConnection.getDatabasePath()));
+
+        passwordList = dao.getAllPasswords();
+
         Tools.entablarContrasenias(tablePasswords, passwordList);
 
         List<String> categories = new ArrayList<>();
@@ -387,10 +447,16 @@ public class DashboardPNL extends javax.swing.JPanel {
         Tools.loadIntoCombobox(comboboxService, services);
     }
 
+    public static String getDatabaseName(String dbPath) {
+        File dbFile = new File(dbPath);
+        return dbFile.getName();  // Devuelve solo el nombre del archivo, por ejemplo: passwords.db
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBTN;
     private javax.swing.JComboBox<String> comboboxCateg;
     private javax.swing.JComboBox<String> comboboxService;
+    private javax.swing.JLabel currentDBLBL;
     private javax.swing.JButton deleteBTN;
     private javax.swing.JButton editBTN;
     private javax.swing.JButton exportBTN;
