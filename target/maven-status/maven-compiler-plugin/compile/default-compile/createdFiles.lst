@@ -13,7 +13,9 @@ frank\password_manager\Utils\Encrypter.class
 frank\password_manager\UI\AgregarPassPNL.class
 frank\password_manager\UI\RegistrarPNL$1.class
 frank\password_manager\UI\AgregarPassPNL$2.class
+frank\password_manager\UI\DashboardPNL$8.class
 frank\password_manager\UI\DashboardPNL$3.class
+frank\password_manager\Utils\Tools$1.class
 frank\password_manager\UI\DashboardPNL.class
 frank\password_manager\UI\EditPassPNL$1.class
 frank\password_manager\DAO\PasswordDAO.class
@@ -22,9 +24,13 @@ frank\password_manager\UI\EditPassPNL.class
 frank\password_manager\UI\RegistrarPNL.class
 frank\password_manager\UI\DashboardPNL$4.class
 frank\password_manager\Database\DatabaseConnection.class
+frank\password_manager\UI\DashboardPNL$9.class
 frank\password_manager\Models\User.class
 frank\password_manager\Models\Password.class
+frank\password_manager\UI\DashboardPNL$7.class
 frank\password_manager\UI\AgregarPassPNL$1.class
+frank\password_manager\Utils\PlaceholderTextField$1.class
+frank\password_manager\Utils\PlaceholderTextField.class
 frank\password_manager\UI\DashboardPNL$2.class
 frank\password_manager\UI\EditPassPNL$3.class
 frank\password_manager\Password_Manager.class

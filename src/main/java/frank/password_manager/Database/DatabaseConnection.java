@@ -11,7 +11,7 @@ public class DatabaseConnection {
 
     public static void initializeDatabase() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:sqlite:src/main/resources/passManager.db");
+        config.setJdbcUrl("jdbc:sqlite:src/main/resources/passwords.db");
         config.setMaximumPoolSize(3);
         config.setPoolName("HikariSQLitePool");
 

@@ -1,12 +1,21 @@
 package frank.password_manager.UI;
 
 import frank.password_manager.DAO.PasswordDAO;
+import frank.password_manager.Database.DatabaseConnection;
 import frank.password_manager.Models.Password;
 import frank.password_manager.Utils.Tools;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class DashboardPNL extends javax.swing.JPanel {
 
@@ -20,13 +29,29 @@ public class DashboardPNL extends javax.swing.JPanel {
 
         try {
             passwordList = dao.getAllPasswords();
-            Tools.entablarContrasenias(tablePasswords, dao.getAllPasswords());
-            Tools.loadIntoCombobox(comboboxCateg, dao.getAllCategories());
-            Tools.loadIntoCombobox(comboboxService, dao.getAllServices());
+            initializeDashboard();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error. " + e.toString());
         }
+
+        searchTF.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterTable();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterTable();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterTable();
+            }
+        });
+
     }
 
     /**
@@ -39,13 +64,17 @@ public class DashboardPNL extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablePasswords = new javax.swing.JTable();
         searchTF = new javax.swing.JTextField();
-        searchBTN = new javax.swing.JButton();
         comboboxCateg = new javax.swing.JComboBox<>();
         editBTN = new javax.swing.JButton();
         deleteBTN = new javax.swing.JButton();
         addBTN = new javax.swing.JButton();
         comboboxService = new javax.swing.JComboBox<>();
         filtroBTN = new javax.swing.JButton();
+        importBTN = new javax.swing.JButton();
+        exportBTN = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         tablePasswords.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -73,11 +102,15 @@ public class DashboardPNL extends javax.swing.JPanel {
             tablePasswords.getColumnModel().getColumn(0).setPreferredWidth(100);
         }
 
-        searchBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        searchBTN.setText("Buscar");
+        searchTF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        searchTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchTFActionPerformed(evt);
+            }
+        });
 
         comboboxCateg.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        comboboxCateg.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Todo"}));
+        comboboxCateg.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
         comboboxCateg.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboboxCategActionPerformed(evt);
@@ -109,8 +142,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         });
 
         comboboxService.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        comboboxService.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Todo"}));
-        comboboxService.setPreferredSize(new java.awt.Dimension(72, 26));
+        comboboxService.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
 
         filtroBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         filtroBTN.setText("Filtrar");
@@ -120,6 +152,28 @@ public class DashboardPNL extends javax.swing.JPanel {
             }
         });
 
+        importBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        importBTN.setText("Importar");
+        importBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importBTNActionPerformed(evt);
+            }
+        });
+
+        exportBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        exportBTN.setText("Exportar");
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setText("Buscar:");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Servicio");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("Categoria");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -128,50 +182,60 @@ public class DashboardPNL extends javax.swing.JPanel {
                 .addGap(88, 88, 88)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(editBTN)
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(152, 152, 152)
+                        .addComponent(importBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(exportBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(addBTN)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(editBTN)
+                        .addGap(18, 18, 18)
                         .addComponent(deleteBTN)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(filtroBTN)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(comboboxService, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(comboboxCateg, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchBTN)
-                        .addGap(314, 314, 314)
-                        .addComponent(addBTN)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(comboboxService, 0, 89, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(comboboxCateg, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addComponent(jLabel3)))))
                 .addGap(89, 89, 89))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(1, 1, 1)
-                                .addComponent(searchBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(26, 26, 26))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(addBTN)
-                        .addGap(18, 18, 18)))
+                .addGap(51, 51, 51)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addBTN)
+                    .addComponent(importBTN)
+                    .addComponent(exportBTN)
+                    .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addGap(5, 5, 5)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(editBTN)
                     .addComponent(deleteBTN)
                     .addComponent(comboboxCateg, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboboxService, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(filtroBTN))
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -199,6 +263,23 @@ public class DashboardPNL extends javax.swing.JPanel {
             Tools.entablarContrasenias(tablePasswords, filteredPasswords);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error. " + e.toString());
+        }
+    }
+
+    // Método para aplicar el filtro en base al texto ingresado
+    private void filterTable() {
+        String searchTerm = searchTF.getText().toLowerCase();
+
+        List<Password> filteredPasswords = passwordList.stream()
+                .filter(p -> p.getServiceName().toLowerCase().contains(searchTerm)
+                || p.getUsername().toLowerCase().contains(searchTerm)
+                || p.getCategory().toLowerCase().contains(searchTerm))
+                .collect(Collectors.toList());
+
+        // Actualizar la tabla con los datos filtrados
+        try {
+            Tools.entablarContrasenias(tablePasswords, filteredPasswords);
+        } catch (Exception e) {
         }
     }
 
@@ -248,6 +329,63 @@ public class DashboardPNL extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_deleteBTNActionPerformed
 
+    private void importBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importBTNActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        int returnValue = fileChooser.showOpenDialog(this);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            File tempFile = new File("src/main/resources/temp_passwords.db"); // Archivo temporal
+
+            try {
+                // Cerrar conexiones a la base de datos
+                DatabaseConnection.close();
+
+                // Copiar el archivo seleccionado a un archivo temporal
+                Files.copy(selectedFile.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                // Reemplazar el archivo original con el temporal
+                Files.move(tempFile.toPath(), new File("src/main/resources/passwords.db").toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                // Reiniciar la conexión a la base de datos
+                DatabaseConnection.initializeDatabase();
+
+                try {
+                    initializeDashboard();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error : " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+                JOptionPane.showMessageDialog(this, "Base de datos importada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error al importar la base de datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                // Eliminar el archivo temporal si existe
+                if (tempFile.exists()) {
+                    tempFile.delete();
+                }
+            }
+        }
+    }//GEN-LAST:event_importBTNActionPerformed
+
+    private void searchTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchTFActionPerformed
+
+    private void initializeDashboard() throws Exception {
+        Tools.entablarContrasenias(tablePasswords, passwordList);
+
+        List<String> categories = new ArrayList<>();
+        categories.add("Todo");
+        categories.addAll(dao.getAllCategories());
+
+        List<String> services = new ArrayList<>();
+        services.add("Todo");
+        services.addAll(dao.getAllServices());
+
+        Tools.loadIntoCombobox(comboboxCateg, categories);
+        Tools.loadIntoCombobox(comboboxService, services);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBTN;
@@ -255,9 +393,13 @@ public class DashboardPNL extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> comboboxService;
     private javax.swing.JButton deleteBTN;
     private javax.swing.JButton editBTN;
+    private javax.swing.JButton exportBTN;
     private javax.swing.JButton filtroBTN;
+    private javax.swing.JButton importBTN;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton searchBTN;
     private javax.swing.JTextField searchTF;
     private javax.swing.JTable tablePasswords;
     // End of variables declaration//GEN-END:variables
