@@ -110,7 +110,7 @@ public class RegistrarPNL extends javax.swing.JPanel {
 
     private void registerBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBTNActionPerformed
         String username = userTF.getText();
-        String password = passwordTF.getPassword().toString();
+        String password = String.valueOf(passwordTF.getPassword());
 
         UserDAO dao = new UserDAO();
 

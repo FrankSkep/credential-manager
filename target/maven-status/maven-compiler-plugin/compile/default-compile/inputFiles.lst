@@ -5,7 +5,9 @@ C:\Users\fran\Documents\NetBeansProjects\Password_Manager\src\main\java\frank\pa
 C:\Users\fran\Documents\NetBeansProjects\Password_Manager\src\main\java\frank\password_manager\Models\Password.java
 C:\Users\fran\Documents\NetBeansProjects\Password_Manager\src\main\java\frank\password_manager\Models\User.java
 C:\Users\fran\Documents\NetBeansProjects\Password_Manager\src\main\java\frank\password_manager\Password_Manager.java
+C:\Users\fran\Documents\NetBeansProjects\Password_Manager\src\main\java\frank\password_manager\UI\AgregarPassPNL.java
 C:\Users\fran\Documents\NetBeansProjects\Password_Manager\src\main\java\frank\password_manager\UI\DashboardPNL.java
+C:\Users\fran\Documents\NetBeansProjects\Password_Manager\src\main\java\frank\password_manager\UI\EditPassPNL.java
 C:\Users\fran\Documents\NetBeansProjects\Password_Manager\src\main\java\frank\password_manager\UI\IniciarSesionPNL.java
 C:\Users\fran\Documents\NetBeansProjects\Password_Manager\src\main\java\frank\password_manager\UI\RegistrarPNL.java
 C:\Users\fran\Documents\NetBeansProjects\Password_Manager\src\main\java\frank\password_manager\Utils\Encrypter.java

@@ -11,11 +11,13 @@ public class Password {
     private String serviceName;
     private String username;
     private String password;
+    private String category;
 
-    public Password(String serviceName, String username, String password) {
+    public Password(String serviceName, String username, String password, String category) {
         this.serviceName = serviceName;
         this.username = username;
         this.password = password;
+        this.category = category;
     }
 
 }

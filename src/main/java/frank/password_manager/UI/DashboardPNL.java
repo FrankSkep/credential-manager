@@ -1,20 +1,32 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package frank.password_manager.UI;
 
-/**
- *
- * @author fran
- */
+import frank.password_manager.DAO.PasswordDAO;
+import frank.password_manager.Models.Password;
+import frank.password_manager.Utils.Tools;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 public class DashboardPNL extends javax.swing.JPanel {
 
-    /**
-     * Creates new form Dashboard
-     */
+    private PasswordDAO dao;
+    private List<Password> passwordList;
+
     public DashboardPNL() {
         initComponents();
+
+        dao = PasswordDAO.getInstance();
+
+        try {
+            passwordList = dao.getAllPasswords();
+            Tools.entablarContrasenias(tablePasswords, dao.getAllPasswords());
+            Tools.loadIntoCombobox(comboboxCateg, dao.getAllCategories());
+            Tools.loadIntoCombobox(comboboxService, dao.getAllServices());
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrio un error. " + e.toString());
+        }
     }
 
     /**
@@ -24,19 +36,229 @@ public class DashboardPNL extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tablePasswords = new javax.swing.JTable();
+        searchTF = new javax.swing.JTextField();
+        searchBTN = new javax.swing.JButton();
+        comboboxCateg = new javax.swing.JComboBox<>();
+        editBTN = new javax.swing.JButton();
+        deleteBTN = new javax.swing.JButton();
+        addBTN = new javax.swing.JButton();
+        comboboxService = new javax.swing.JComboBox<>();
+        filtroBTN = new javax.swing.JButton();
+
+        tablePasswords.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Id", "Servicio", "Usuario", "Contraseña", "Categoria"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablePasswords.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        tablePasswords.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tablePasswords);
+        if (tablePasswords.getColumnModel().getColumnCount() > 0) {
+            tablePasswords.getColumnModel().getColumn(0).setPreferredWidth(100);
+        }
+
+        searchBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        searchBTN.setText("Buscar");
+
+        comboboxCateg.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        comboboxCateg.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Todo"}));
+        comboboxCateg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboboxCategActionPerformed(evt);
+            }
+        });
+
+        editBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        editBTN.setText("Editar");
+        editBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBTNActionPerformed(evt);
+            }
+        });
+
+        deleteBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        deleteBTN.setText("Eliminar");
+        deleteBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBTNActionPerformed(evt);
+            }
+        });
+
+        addBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        addBTN.setText("Agregar nueva");
+        addBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBTNActionPerformed(evt);
+            }
+        });
+
+        comboboxService.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        comboboxService.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Todo"}));
+        comboboxService.setPreferredSize(new java.awt.Dimension(72, 26));
+
+        filtroBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        filtroBTN.setText("Filtrar");
+        filtroBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filtroBTNActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1000, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(88, 88, 88)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(editBTN)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(deleteBTN)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(filtroBTN)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(comboboxService, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(comboboxCateg, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchBTN)
+                        .addGap(314, 314, 314)
+                        .addComponent(addBTN)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
+                .addGap(89, 89, 89))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addComponent(searchBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(26, 26, 26))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(addBTN)
+                        .addGap(18, 18, 18)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(editBTN)
+                    .addComponent(deleteBTN)
+                    .addComponent(comboboxCateg, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboboxService, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filtroBTN))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void comboboxCategActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboboxCategActionPerformed
+
+
+    }//GEN-LAST:event_comboboxCategActionPerformed
+
+    // Método para aplicar el filtro
+    private void applyFilter(String service, String category) {
+        List<Password> filteredPasswords = passwordList.stream()
+                .filter(p -> {
+                    // Comprobar si la categoría es "Todo" o si coincide con la categoría de la contraseña
+                    boolean matchesCategory = category.equalsIgnoreCase("Todo") || p.getCategory().equalsIgnoreCase(category);
+
+                    // Comprobar si el servicio está vacío (si no quieres que filtre por servicio si está vacío)
+                    boolean matchesService = service.equalsIgnoreCase("Todo") || p.getServiceName().toLowerCase().contains(service.toLowerCase());
+
+                    return matchesCategory && matchesService;
+                })
+                .collect(Collectors.toList());
+
+        // Actualizar la tabla con las contraseñas filtradas
+        try {
+            Tools.entablarContrasenias(tablePasswords, filteredPasswords);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrio un error. " + e.toString());
+        }
+    }
+
+    private void addBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBTNActionPerformed
+        Tools.changePanel(new AgregarPassPNL(), (JPanel) this.getParent());
+    }//GEN-LAST:event_addBTNActionPerformed
+
+    private void filtroBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtroBTNActionPerformed
+        String service = comboboxService.getSelectedItem().toString();
+        String category = comboboxCateg.getSelectedItem().toString();
+        applyFilter(service, category);
+    }//GEN-LAST:event_filtroBTNActionPerformed
+
+    private void editBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBTNActionPerformed
+        int selectedRow = tablePasswords.getSelectedRow();
+
+        if (selectedRow != -1) {
+            Long id = Long.valueOf(tablePasswords.getValueAt(selectedRow, 0).toString());
+            String serviceName = tablePasswords.getValueAt(selectedRow, 1).toString();
+            String username = tablePasswords.getValueAt(selectedRow, 2).toString();
+            String password = tablePasswords.getValueAt(selectedRow, 3).toString();
+            String category = tablePasswords.getValueAt(selectedRow, 4).toString();
+            Tools.changePanel(new EditPassPNL(new Password(id, serviceName, username, password, category)), (JPanel) this.getParent());
+        } else {
+            JOptionPane.showInternalMessageDialog(null, "No se selecciono ningun elemento", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_editBTNActionPerformed
+
+    private void deleteBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBTNActionPerformed
+        int selectedRow = tablePasswords.getSelectedRow();
+
+        if (selectedRow != -1) {
+            Long id = Long.valueOf(tablePasswords.getValueAt(selectedRow, 0).toString());
+            int res = JOptionPane.showConfirmDialog(null, "¿Seguro que desea eliminar la contraseña con id " + id + " ?");
+            if (res == JOptionPane.YES_OPTION) {
+                if (dao.deletePassword(id)) {
+                    JOptionPane.showInternalMessageDialog(null, "Contraseña eliminada exitosamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+                    try {
+                        Tools.entablarContrasenias(tablePasswords, dao.getAllPasswords());
+                    } catch (Exception e) {
+                        System.out.println("Error " + e.getMessage());
+                    }
+                }
+            }
+        } else {
+            JOptionPane.showInternalMessageDialog(null, "No se selecciono ningun elemento", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_deleteBTNActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addBTN;
+    private javax.swing.JComboBox<String> comboboxCateg;
+    private javax.swing.JComboBox<String> comboboxService;
+    private javax.swing.JButton deleteBTN;
+    private javax.swing.JButton editBTN;
+    private javax.swing.JButton filtroBTN;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton searchBTN;
+    private javax.swing.JTextField searchTF;
+    private javax.swing.JTable tablePasswords;
     // End of variables declaration//GEN-END:variables
 }

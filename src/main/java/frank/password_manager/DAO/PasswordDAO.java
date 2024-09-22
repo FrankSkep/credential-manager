@@ -13,9 +13,24 @@ import java.util.List;
 
 public class PasswordDAO {
 
+    // Instancia estatica privada
+    private static PasswordDAO instance;
+
+    // Constructor privado para evitar instanciación directa
+    private PasswordDAO() {
+    }
+
+    // Método estático para obtener la única instancia
+    public static synchronized PasswordDAO getInstance() {
+        if (instance == null) {
+            instance = new PasswordDAO();
+        }
+        return instance;
+    }
+
     public boolean savePassword(Password password) throws Exception {
 
-        String query = "INSERT INTO passwords (service_name, username, password) VALUES (?, ?, ?)";
+        String query = "INSERT INTO passwords (service_name, username, password, category) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             String encryptedPassword = Encrypter.encryptPassword(password.getPassword());
@@ -23,6 +38,7 @@ public class PasswordDAO {
             stmt.setString(1, password.getServiceName());
             stmt.setString(2, password.getUsername());
             stmt.setString(3, encryptedPassword);
+            stmt.setString(4, password.getCategory());
 
             return stmt.executeUpdate() > 0;
 
@@ -32,20 +48,20 @@ public class PasswordDAO {
         return false;
     }
 
-    public boolean updatePassword(Password newPassword, Long idPassword) throws Exception {
-        String query = "UPDATE passwords SET service_name = ?, username = ?, password_hash = ? WHERE id = ?";
+    public boolean updatePassword(Password newPassword) throws Exception {
+        String query = "UPDATE passwords SET service_name = ?, username = ?, password = ?, category = ? WHERE id = ?";
 
         // Cifrar la nueva contraseña antes de actualizarla
         String encryptedPassword = Encrypter.encryptPassword(newPassword.getPassword());
 
         try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
-            // Establecer los nuevos valores (nombre del servicio, usuario y contraseña)
+            // Establecer los nuevos valores
             stmt.setString(1, newPassword.getServiceName());
             stmt.setString(2, newPassword.getUsername());
             stmt.setString(3, encryptedPassword);
-
-            stmt.setLong(4, idPassword);
+            stmt.setString(4, newPassword.getCategory());
+            stmt.setLong(5, newPassword.getId());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -70,7 +86,7 @@ public class PasswordDAO {
     }
 
     public List<Password> getAllPasswords() throws Exception {
-        String query = "SELECT id, service_name, username, password FROM passwords";
+        String query = "SELECT id, service_name, username, password, category FROM passwords";
 
         List<Password> passwords = new ArrayList<>();
 
@@ -84,13 +100,14 @@ public class PasswordDAO {
                 Long id = rs.getLong("id");
                 String service_name = rs.getString("service_name");
                 String username = rs.getString("username");
-                String encryptedPassword = rs.getString("password_hash");
+                String encryptedPassword = rs.getString("password");
+                String category = rs.getString("category");
 
                 // Desencriptar la contraseña
                 String decryptedPassword = Encrypter.decryptPassword(encryptedPassword);
 
                 // Crear el objeto Password y agregarlo a la lista
-                passwords.add(new Password(id, service_name, username, decryptedPassword));
+                passwords.add(new Password(id, service_name, username, decryptedPassword, category));
             }
         } catch (SQLException e) {
             JOptionPane.showInternalMessageDialog(null, "Ocurrio un error : " + e.toString(), "Error", JOptionPane.WARNING_MESSAGE);
@@ -99,8 +116,25 @@ public class PasswordDAO {
         return passwords;
     }
 
+    public List<String> getAllServices() {
+        String query = "SELECT DISTINCT service_name FROM passwords";
+        List<String> services = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                services.add(rs.getString("service_name"));
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showInternalMessageDialog(null, "Ocurrio un error : " + e.toString(), "Error", JOptionPane.WARNING_MESSAGE);
+        }
+
+        return services;
+    }
+
     public List<Password> getPasswordsByService(String service_name) throws Exception {
-        String query = "SELECT id, username, password FROM passwords WHERE service_name = ?";
+        String query = "SELECT id, username, password, category FROM passwords WHERE service_name = ?";
 
         List<Password> passwords = new ArrayList<>();
 
@@ -117,12 +151,13 @@ public class PasswordDAO {
                 Long id = rs.getLong("id");
                 String username = rs.getString("username");
                 String encryptedPassword = rs.getString("password");
+                String category = rs.getString("category");
 
                 // Desencriptar la contraseña
                 String decryptedPassword = Encrypter.decryptPassword(encryptedPassword);
 
                 // Crear el objeto Password y agregarlo a la lista
-                passwords.add(new Password(id, service_name, username, decryptedPassword));
+                passwords.add(new Password(id, service_name, username, decryptedPassword, category));
             }
         } catch (SQLException e) {
             JOptionPane.showInternalMessageDialog(null, "Ocurrio un error : " + e.toString(), "Error", JOptionPane.WARNING_MESSAGE);
@@ -133,10 +168,10 @@ public class PasswordDAO {
 
     // Método para obtener todas las categorías
     public List<String> getAllCategories() {
-        String sql = "SELECT DISTINCT category FROM passwords";
+        String query = "SELECT DISTINCT category FROM passwords";
         List<String> categories = new ArrayList<>();
 
-        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 categories.add(rs.getString("category"));
