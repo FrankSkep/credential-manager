@@ -1,8 +1,8 @@
 package frank.credential_manager;
 
 import frank.credential_manager.Database.DatabaseConnection;
-import frank.credential_manager.UI.IniciarSesionPNL;
-import frank.credential_manager.UI.RegistrarPNL;
+import frank.credential_manager.Views.IniciarSesionPNL;
+import frank.credential_manager.Views.RegistrarPNL;
 import frank.credential_manager.Database.ConfigManager;
 import frank.credential_manager.Utils.Tools;
 import java.io.File;

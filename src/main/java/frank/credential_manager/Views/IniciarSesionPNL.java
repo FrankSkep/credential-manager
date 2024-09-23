@@ -1,4 +1,4 @@
-package frank.credential_manager.UI;
+package frank.credential_manager.Views;
 
 import frank.credential_manager.DAO.UserDAO;
 import frank.credential_manager.Utils.Tools;
