@@ -421,7 +421,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         return null; // Si se cancela
     }
 
-    private void initializeDashboard() throws Exception {
+    public void initializeDashboard() throws Exception {
         System.gc();
 
         currentDBLBL.setText("Actual: " + Tools.getFileName(DatabaseConnection.getDatabasePath()));

@@ -209,12 +209,11 @@ public class AgregarPassPNL extends javax.swing.JPanel {
         try {
             if (dao.savePassword(newPassword)) {
                 JOptionPane.showInternalMessageDialog(null, "Se ha agregado la contraseña", "Exito", JOptionPane.INFORMATION_MESSAGE);
-                Tools.changePanel(new DashboardPNL(), (JPanel) this.getParent());
+                cleanFields();
             }
         } catch (Exception ex) {
             JOptionPane.showInternalMessageDialog(null, "Ocurrio un error : " + ex.toString(), "Error", JOptionPane.WARNING_MESSAGE);
         }
-//        Tools.cleanTextFields(new JTextField[]{serviceTF, userTF, passTF});
     }//GEN-LAST:event_saveBTNActionPerformed
 
     private void addCatBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCatBTNActionPerformed
@@ -228,7 +227,13 @@ public class AgregarPassPNL extends javax.swing.JPanel {
     private void volverBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverBTNActionPerformed
         Tools.changePanel(new DashboardPNL(), (JPanel) this.getParent());
     }//GEN-LAST:event_volverBTNActionPerformed
-
+    
+    public void cleanFields() {
+        serviceTF.setText("");
+        userTF.setText("");
+        passTF.setText("");
+        categoriaCBOX.setSelectedIndex(0);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addCatBTN;

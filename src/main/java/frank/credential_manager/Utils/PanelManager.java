@@ -30,7 +30,7 @@ public class PanelManager {
         this.mainPanel = mainPanel;
     }
 
-    public void changePanel(String panelName, Object param) {
+    public void changePanel(String panelName, Object param) throws Exception {
         if (mainPanel == null) {
             throw new IllegalStateException("Main panel not set");
         }
@@ -56,6 +56,11 @@ public class PanelManager {
                     break;
             }
             panels.put(panelName, p);
+        }
+
+        // Actualizar los datos si el panel necesita información actualizada
+        if (p instanceof DashboardPNL) {
+            ((DashboardPNL) p).initializeDashboard();
         }
 
         p.setSize(mainPanel.getWidth(), mainPanel.getHeight());
