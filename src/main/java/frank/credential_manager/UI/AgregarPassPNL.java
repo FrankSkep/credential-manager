@@ -5,7 +5,6 @@ import frank.credential_manager.Models.Password;
 import frank.credential_manager.Utils.Tools;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class AgregarPassPNL extends javax.swing.JPanel {
 
@@ -225,9 +224,9 @@ public class AgregarPassPNL extends javax.swing.JPanel {
     }//GEN-LAST:event_addCatBTNActionPerformed
 
     private void volverBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverBTNActionPerformed
-        Tools.changePanel(new DashboardPNL(), (JPanel) this.getParent());
+        Tools.changePanel(DashboardPNL.getInstance(), (JPanel) this.getParent());
     }//GEN-LAST:event_volverBTNActionPerformed
-    
+
     public void cleanFields() {
         serviceTF.setText("");
         userTF.setText("");

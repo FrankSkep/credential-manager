@@ -139,7 +139,7 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
 
         if (dao.authenticateUser(username.toString(), password)) {
             JOptionPane.showMessageDialog(null, "Autenticacion exitosa", "Info", JOptionPane.INFORMATION_MESSAGE);
-            Tools.changePanel(new DashboardPNL(), (JPanel) this.getParent());
+            Tools.changePanel(DashboardPNL.getInstance(), (JPanel) this.getParent());
         }
     }//GEN-LAST:event_iniciarBTNActionPerformed
 

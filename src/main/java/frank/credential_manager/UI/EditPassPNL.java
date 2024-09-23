@@ -226,8 +226,7 @@ public class EditPassPNL extends javax.swing.JPanel {
         try {
             if (dao.updatePassword(new Password(id, service, username, password, category))) {
                 JOptionPane.showInternalMessageDialog(null, "Se ha actualizado la contraseña", "Exito", JOptionPane.INFORMATION_MESSAGE);
-                cleanFields();
-                Tools.changePanel(new DashboardPNL(), (JPanel) this.getParent());
+                Tools.changePanel(DashboardPNL.getInstance(), (JPanel) this.getParent());
             } else {
                 JOptionPane.showInternalMessageDialog(null, "No hubo cambios", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -245,17 +244,9 @@ public class EditPassPNL extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_addCatBTNActionPerformed
 
-    public void cleanFields() {
-        idTF.setText("");
-        serviceTF.setText("");
-        userTF.setText("");
-        passTF.setText("");
-        cateCBOX.setSelectedIndex(0);
-    }
 
     private void backBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBTNActionPerformed
-        cleanFields();
-        Tools.changePanel(new DashboardPNL(), (JPanel) this.getParent());
+        Tools.changePanel(DashboardPNL.getInstance(), (JPanel) this.getParent());
     }//GEN-LAST:event_backBTNActionPerformed
 
     private void loadData(Password password) {

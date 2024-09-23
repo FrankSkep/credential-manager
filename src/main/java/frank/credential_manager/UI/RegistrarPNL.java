@@ -137,7 +137,7 @@ public class RegistrarPNL extends javax.swing.JPanel {
 
         if (dao.registerUser(username, password)) {
             JOptionPane.showMessageDialog(null, "Se ha registrado exitosamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
-            Tools.changePanel(new DashboardPNL(), (JPanel) this.getParent());
+            Tools.changePanel(DashboardPNL.getInstance(), (JPanel) this.getParent());
         }
     }//GEN-LAST:event_registerBTNActionPerformed
 

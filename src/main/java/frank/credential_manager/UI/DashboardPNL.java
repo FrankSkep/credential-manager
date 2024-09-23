@@ -5,11 +5,9 @@ import frank.credential_manager.DAO.UserDAO;
 import frank.credential_manager.Database.DatabaseConnection;
 import frank.credential_manager.Models.Password;
 import frank.credential_manager.Database.ConfigManager;
-import frank.credential_manager.Utils.PanelManager;
 import frank.credential_manager.Utils.Tools;
 import java.awt.Font;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,40 +23,36 @@ import javax.swing.table.JTableHeader;
 
 public class DashboardPNL extends javax.swing.JPanel {
 
+    private static DashboardPNL instance;
     private PasswordDAO dao;
     private List<Password> passwordList;
 
-    public DashboardPNL() {
+    // Constructor privado para evitar instanciación desde fuera
+    private DashboardPNL() {
         initComponents();
-
+        initializeOnce();
         dao = PasswordDAO.getInstance();
 
         try {
-            initializeDashboard();
+            refreshDashboard();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error. " + e.toString());
         }
+    }
 
-        Tools.setImageLabel(searchLBL, "src/main/resources/Icons/search.png");
-        configureTable(); // Configurar tabla
-
-        // Listener para actualizar tabla cada que cambie el textfield
-        searchTF.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                filterTable();
+    // Método para obtener la única instancia de DashboardPNL
+    public static DashboardPNL getInstance() {
+        if (instance == null) {
+            instance = new DashboardPNL();
+        } else {
+            // Refrescar el dashboard cada vez que se obtenga la instancia
+            try {
+                instance.refreshDashboard();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Ocurrió un error al actualizar el dashboard: " + e.getMessage());
             }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                filterTable();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                filterTable();
-            }
-        });
+        }
+        return instance;
     }
 
     /**
@@ -295,7 +289,6 @@ public class DashboardPNL extends javax.swing.JPanel {
 
     private void addBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBTNActionPerformed
         Tools.changePanel(new AgregarPassPNL(), (JPanel) this.getParent());
-//        PanelManager.getInstance().changePanel("Add", this.getParent());
     }//GEN-LAST:event_addBTNActionPerformed
 
     private void filtroBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtroBTNActionPerformed
@@ -380,7 +373,7 @@ public class DashboardPNL extends javax.swing.JPanel {
 
                         // Recargar datos de la nueva base de datos
                         try {
-                            initializeDashboard();
+                            refreshDashboard();
                             JOptionPane.showMessageDialog(null, "Base de datos cambiada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         } catch (Exception e) {
                             JOptionPane.showMessageDialog(null, "Error al inicializar el dashboard: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -392,7 +385,7 @@ public class DashboardPNL extends javax.swing.JPanel {
                         // Revertir a la base de datos anterior
                         DatabaseConnection.initializeDatabase(ConfigManager.loadDatabasePath());
                         try {
-                            initializeDashboard(); // Volver a cargar el dashboard
+                            refreshDashboard(); // Volver a cargar el dashboard
                         } catch (Exception e) {
                         }
 
@@ -421,8 +414,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         return null; // Si se cancela
     }
 
-    public void initializeDashboard() throws Exception {
-        System.gc();
+    private void refreshDashboard() throws Exception {
 
         currentDBLBL.setText("Actual: " + Tools.getFileName(DatabaseConnection.getDatabasePath()));
 
@@ -440,6 +432,28 @@ public class DashboardPNL extends javax.swing.JPanel {
 
         Tools.loadIntoCombobox(comboboxCateg, categories);
         Tools.loadIntoCombobox(comboboxService, services);
+    }
+
+    private void initializeOnce() {
+        Tools.setImageLabel(searchLBL, "src/main/resources/Icons/search.png");
+        configureTable();
+
+        searchTF.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterTable();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterTable();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterTable();
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
