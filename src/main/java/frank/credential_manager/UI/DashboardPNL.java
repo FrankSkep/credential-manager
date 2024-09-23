@@ -5,6 +5,7 @@ import frank.credential_manager.DAO.UserDAO;
 import frank.credential_manager.Database.DatabaseConnection;
 import frank.credential_manager.Models.Password;
 import frank.credential_manager.Database.ConfigManager;
+import frank.credential_manager.Utils.PanelManager;
 import frank.credential_manager.Utils.Tools;
 import java.awt.Font;
 import java.io.File;
@@ -41,7 +42,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         Tools.setImageLabel(searchLBL, "src/main/resources/Icons/search.png");
         configureTable(); // Configurar tabla
 
-        // Listener para actualizar cada que cambie el textfield
+        // Listener para actualizar tabla cada que cambie el textfield
         searchTF.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -294,6 +295,7 @@ public class DashboardPNL extends javax.swing.JPanel {
 
     private void addBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBTNActionPerformed
         Tools.changePanel(new AgregarPassPNL(), (JPanel) this.getParent());
+//        PanelManager.getInstance().changePanel("Add", this.getParent());
     }//GEN-LAST:event_addBTNActionPerformed
 
     private void filtroBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtroBTNActionPerformed

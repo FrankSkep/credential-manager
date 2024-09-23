@@ -5,6 +5,7 @@ import frank.credential_manager.Models.Password;
 import frank.credential_manager.Utils.Tools;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class AgregarPassPNL extends javax.swing.JPanel {
 
@@ -213,6 +214,7 @@ public class AgregarPassPNL extends javax.swing.JPanel {
         } catch (Exception ex) {
             JOptionPane.showInternalMessageDialog(null, "Ocurrio un error : " + ex.toString(), "Error", JOptionPane.WARNING_MESSAGE);
         }
+//        Tools.cleanTextFields(new JTextField[]{serviceTF, userTF, passTF});
     }//GEN-LAST:event_saveBTNActionPerformed
 
     private void addCatBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCatBTNActionPerformed

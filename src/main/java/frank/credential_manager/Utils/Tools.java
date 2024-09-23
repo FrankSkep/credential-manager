@@ -33,7 +33,7 @@ public class Tools {
 
     // Cambia entre paneles
     public static void changePanel(JPanel p, JPanel mainPanel) {
-        p.setSize(1000, 600);
+        p.setSize(mainPanel.getWidth(), mainPanel.getHeight());
         p.setLocation(0, 0);
 
         // Remover todos los componentes y sugerir recolección de basura
@@ -59,6 +59,12 @@ public class Tools {
                 }
             }
         });
+    }
+    
+    public static void cleanTextFields(JTextField[] tfs) {
+        for (JTextField tf : tfs) {
+            tf.setText("");
+        }
     }
 
     public static void setImageButton(JButton button, String root) {

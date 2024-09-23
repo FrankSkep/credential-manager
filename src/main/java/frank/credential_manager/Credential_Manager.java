@@ -4,6 +4,7 @@ import frank.credential_manager.Database.DatabaseConnection;
 import frank.credential_manager.UI.IniciarSesionPNL;
 import frank.credential_manager.UI.RegistrarPNL;
 import frank.credential_manager.Database.ConfigManager;
+import frank.credential_manager.Utils.PanelManager;
 import frank.credential_manager.Utils.Tools;
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +16,8 @@ public class Credential_Manager extends javax.swing.JFrame {
 
     public Credential_Manager() {
         initComponents();
+        
+        PanelManager.getInstance().setMainPanel(contenidoPNL);
 
         setLocationRelativeTo(null); // Iniciar ventana en el centro
         setResizable(false);
