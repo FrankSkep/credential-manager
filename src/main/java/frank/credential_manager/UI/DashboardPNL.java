@@ -8,6 +8,7 @@ import frank.credential_manager.Database.ConfigManager;
 import frank.credential_manager.Utils.Tools;
 import java.awt.Font;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -180,7 +181,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         currentDBLBL.setBackground(new java.awt.Color(255, 255, 255));
         currentDBLBL.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         currentDBLBL.setForeground(new java.awt.Color(0, 0, 0));
-        currentDBLBL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        currentDBLBL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         currentDBLBL.setText(" a");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -218,11 +219,12 @@ public class DashboardPNL extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(changeDbBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(currentDBLBL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(currentDBLBL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(changeDbBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(searchLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
@@ -338,7 +340,6 @@ public class DashboardPNL extends javax.swing.JPanel {
 
 
     private void changeDbBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeDbBTNActionPerformed
-
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Seleccionar nueva base de datos");
 
