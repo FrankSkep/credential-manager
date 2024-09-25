@@ -1,6 +1,6 @@
 package frank.credential_manager.DAO;
 
-import frank.credential_manager.Database.DatabaseConnection;
+import frank.credential_manager.Database.DB_Connection;
 import frank.credential_manager.Models.Password;
 import frank.credential_manager.Utils.Encrypter;
 import java.sql.Connection;
@@ -32,7 +32,7 @@ public class PasswordDAO {
 
         String query = "INSERT INTO passwords (service_name, username, password, category) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DB_Connection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             String encryptedPassword = Encrypter.encryptPassword(password.getPassword());
 
             stmt.setString(1, password.getServiceName());
@@ -54,7 +54,7 @@ public class PasswordDAO {
         // Cifrar la nueva contraseña antes de actualizarla
         String encryptedPassword = Encrypter.encryptPassword(newPassword.getPassword());
 
-        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
             // Establecer los nuevos valores
             stmt.setString(1, newPassword.getServiceName());
@@ -73,7 +73,7 @@ public class PasswordDAO {
     public boolean deletePassword(Long id) {
         String query = "DELETE FROM passwords WHERE id = ?";
 
-        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
             stmt.setLong(1, id);
 
@@ -90,7 +90,7 @@ public class PasswordDAO {
 
         List<Password> passwords = new ArrayList<>();
 
-        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
             // Ejecutar la consulta
             ResultSet rs = stmt.executeQuery();
@@ -120,7 +120,7 @@ public class PasswordDAO {
         String query = "SELECT DISTINCT service_name FROM passwords";
         List<String> services = new ArrayList<>();
 
-        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 services.add(rs.getString("service_name"));
@@ -138,7 +138,7 @@ public class PasswordDAO {
 
         List<Password> passwords = new ArrayList<>();
 
-        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
             // Establecer el parámetro del servicio
             stmt.setString(1, service_name);
@@ -171,7 +171,7 @@ public class PasswordDAO {
         String query = "SELECT DISTINCT category FROM passwords";
         List<String> categories = new ArrayList<>();
 
-        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 categories.add(rs.getString("category"));

@@ -7,7 +7,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class Encrypter {
 
     private static final String ALGORITHM = "AES";
-    private static final byte[] keyValue = "S3cr3tK3y1234567".getBytes(); // Clave secreta
+    private static final byte[] keyValue = "A1B2C3D4E5F60789".getBytes(); // Clave secreta
 
     // Método para cifrar
     public static String encryptPassword(String password) throws Exception {

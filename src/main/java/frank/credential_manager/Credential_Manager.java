@@ -1,15 +1,13 @@
 package frank.credential_manager;
 
-import frank.credential_manager.Database.DatabaseConnection;
+import frank.credential_manager.Database.DB_Chooser;
+import frank.credential_manager.Database.DB_Connection;
 import frank.credential_manager.Views.IniciarSesionPNL;
 import frank.credential_manager.Views.RegistrarPNL;
-import frank.credential_manager.Database.ConfigManager;
 import frank.credential_manager.Utils.Tools;
-import java.io.File;
-import java.io.IOException;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class Credential_Manager extends javax.swing.JFrame {
 
@@ -19,10 +17,10 @@ public class Credential_Manager extends javax.swing.JFrame {
         setLocationRelativeTo(null); // Iniciar ventana en el centro
         setResizable(false); // Desactiva redimension
 
-        initializeDbFile(); // Inicializa el archivo de base de datos
+        DB_Chooser.initializeDbFile(); // Inicializa base de datos
 
         // Si no existe un usuario en la db, pide registro, de lo contrario, pide autenticar
-        if (Tools.primerAcceso()) {
+        if (primerAcceso()) {
             Tools.changePanel(new RegistrarPNL(), contenidoPNL);
         } else {
             Tools.changePanel(new IniciarSesionPNL(), contenidoPNL);
@@ -115,63 +113,20 @@ public class Credential_Manager extends javax.swing.JFrame {
         });
     }
 
-    // Método que pide al usuario que seleccione o cree una base de datos
-    private String promptUserForDatabase() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Seleccionar o crear base de datos");
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    // Verifica si es el primer acceso a la base de datos
+    public static boolean primerAcceso() {
+        String sql = "SELECT COUNT(*) FROM users";
+        try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
 
-        // Filtro para solo mostrar archivos .db
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de base de datos (.db)", "db");
-        fileChooser.setFileFilter(filter);
-
-        int returnValue = fileChooser.showOpenDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-
-            if (!selectedFile.getName().toLowerCase().endsWith(".db")) {
-                selectedFile = new File(selectedFile.getAbsolutePath() + ".db");
-            }
-
-            if (!selectedFile.exists()) {
-                // Si el archivo no existe, preguntar si desea crearlo
-                int option = JOptionPane.showConfirmDialog(null, "El archivo no existe. ¿Deseas crearlo?", "Crear Base de Datos", JOptionPane.YES_NO_OPTION);
-                if (option == JOptionPane.YES_OPTION) {
-                    try {
-                        if (selectedFile.createNewFile()) {
-                            JOptionPane.showMessageDialog(null, "Base de datos creada con éxito.");
-                            return selectedFile.getAbsolutePath();
-                        }
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(null, "Error al crear la base de datos: " + e.getMessage());
-                    }
-                }
+            if (rs.next()) {
+                return rs.getInt(1) == 0;
             } else {
-                return selectedFile.getAbsolutePath();
+                return false;
             }
-        }
-        return null;
-    }
 
-    // Inicializa la base de datos
-    private void initializeDbFile() {
-        // Cargar la ruta de la base de datos desde configuración
-        String dbPath = ConfigManager.loadDatabasePath();
-
-        if (dbPath == null || dbPath.isEmpty() || !Tools.isDatabaseFileExists(dbPath)) {
-            // Si no hay una base de datos guardada o si el archivo no existe, preguntar al usuario
-            dbPath = promptUserForDatabase();
-        }
-
-        if (dbPath != null) {
-            // Guardar la ruta seleccionada para futuros usos
-            ConfigManager.saveDatabasePath(dbPath);
-
-            // Inicializar la conexión con la base de datos
-            DatabaseConnection.initializeDatabase(dbPath);
-        } else {
-            JOptionPane.showMessageDialog(null, "No se seleccionó una base de datos. La aplicación se cerrará.");
-            System.exit(0);
+        } catch (Exception e) {
+            return false;
         }
     }
 
