@@ -37,7 +37,7 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
 
         passLBL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         passLBL.setForeground(new java.awt.Color(0, 0, 0));
-        passLBL.setText("Contraseña maestra");
+        passLBL.setText("Contraseña");
 
         iniciarBTN.setBackground(new java.awt.Color(0, 102, 204));
         iniciarBTN.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N

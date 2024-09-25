@@ -40,7 +40,7 @@ public class RegistrarPNL extends javax.swing.JPanel {
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Contraseña maestra");
+        jLabel3.setText("Contraseña");
 
         passwordTF.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 

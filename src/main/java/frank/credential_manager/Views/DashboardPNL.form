@@ -3,7 +3,7 @@
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-      <Color blue="e3" green="d2" red="bb" type="rgb"/>
+      <Color blue="ff" green="ff" red="cc" type="rgb"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -43,7 +43,7 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="searchTF" min="-2" pref="285" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="changeDbBTN" min="-2" max="-2" attributes="0"/>
+                          <Component id="uploadDatabaseBTN" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="currentDBLBL" min="-2" pref="147" max="-2" attributes="0"/>
                       </Group>
@@ -59,9 +59,9 @@
           <Group type="102" attributes="0">
               <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="currentDBLBL" alignment="0" max="32767" attributes="0"/>
+                  <Component id="currentDBLBL" alignment="0" pref="42" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="changeDbBTN" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                      <Component id="uploadDatabaseBTN" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                       <Component id="searchLBL" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
                       <Component id="searchTF" alignment="3" min="-2" pref="41" max="-2" attributes="0"/>
                   </Group>
@@ -237,7 +237,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="filtroBTNActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="changeDbBTN">
+    <Component class="javax.swing.JButton" name="uploadDatabaseBTN">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="14" style="0"/>
@@ -248,7 +248,7 @@
         <Property name="text" type="java.lang.String" value="Subir archivo"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changeDbBTNActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadDatabaseBTNActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="searchLBL">
@@ -265,7 +265,7 @@
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Segoe UI" size="14" style="0"/>
+          <Font name="Segoe UI" size="14" style="1"/>
         </Property>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="0" red="0" type="rgb"/>

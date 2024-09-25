@@ -1,24 +1,18 @@
 package frank.credential_manager.Views;
 
 import frank.credential_manager.DAO.PasswordDAO;
-import frank.credential_manager.DAO.UserDAO;
-import frank.credential_manager.Database.DatabaseConnection;
+import frank.credential_manager.Database.DB_Connection;
 import frank.credential_manager.Models.Password;
-import frank.credential_manager.Database.ConfigManager;
+import frank.credential_manager.Database.DB_Chooser;
 import frank.credential_manager.Utils.Tools;
 import java.awt.Font;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
 
 public class DashboardPNL extends javax.swing.JPanel {
@@ -71,11 +65,11 @@ public class DashboardPNL extends javax.swing.JPanel {
         addBTN = new javax.swing.JButton();
         comboboxService = new javax.swing.JComboBox<>();
         filtroBTN = new javax.swing.JButton();
-        changeDbBTN = new javax.swing.JButton();
+        uploadDatabaseBTN = new javax.swing.JButton();
         searchLBL = new javax.swing.JLabel();
         currentDBLBL = new javax.swing.JLabel();
 
-        setBackground(new java.awt.Color(187, 210, 227));
+        setBackground(new java.awt.Color(204, 255, 255));
 
         tablePasswords.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         tablePasswords.setModel(new javax.swing.table.DefaultTableModel(
@@ -161,12 +155,12 @@ public class DashboardPNL extends javax.swing.JPanel {
             }
         });
 
-        changeDbBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        changeDbBTN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/upload_file.png"))); // NOI18N
-        changeDbBTN.setText("Subir archivo");
-        changeDbBTN.addActionListener(new java.awt.event.ActionListener() {
+        uploadDatabaseBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        uploadDatabaseBTN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/upload_file.png"))); // NOI18N
+        uploadDatabaseBTN.setText("Subir archivo");
+        uploadDatabaseBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                changeDbBTNActionPerformed(evt);
+                uploadDatabaseBTNActionPerformed(evt);
             }
         });
 
@@ -174,7 +168,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         searchLBL.setText("  ");
 
         currentDBLBL.setBackground(new java.awt.Color(255, 255, 255));
-        currentDBLBL.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        currentDBLBL.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         currentDBLBL.setForeground(new java.awt.Color(0, 0, 0));
         currentDBLBL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         currentDBLBL.setText(" a");
@@ -204,7 +198,7 @@ public class DashboardPNL extends javax.swing.JPanel {
                             .addGap(18, 18, 18)
                             .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(changeDbBTN)
+                            .addComponent(uploadDatabaseBTN)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(currentDBLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 851, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -215,9 +209,9 @@ public class DashboardPNL extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(currentDBLBL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(currentDBLBL, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(changeDbBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(uploadDatabaseBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(searchLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
@@ -235,7 +229,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    // Método para aplicar el filtro por servicio y categoria
+    // Método para aplicar el filtro por servicio y categoria a la tabla
     private void applyFilter(String service, String category) {
         List<Password> filteredPasswords = passwordList.stream()
                 .filter(p -> {
@@ -257,6 +251,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         }
     }
 
+    // Configura la tabla de contraseñas
     private void configureTable() {
 
         // Ajustar tamaño fuente header
@@ -270,7 +265,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         Tools.adjustColumnWidths(tablePasswords);
     }
 
-    // Método para aplicar el filtro en base al texto ingresado
+    // Método para aplicar el filtro en base al texto ingresado en el buscador
     private void filterTable() {
         String searchTerm = searchTF.getText().toLowerCase();
 
@@ -287,16 +282,19 @@ public class DashboardPNL extends javax.swing.JPanel {
         }
     }
 
+    // Accion boton agregar
     private void addBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBTNActionPerformed
         Tools.changePanel(new AgregarPassPNL(), (JPanel) this.getParent());
     }//GEN-LAST:event_addBTNActionPerformed
 
+    // Accion boton filtrar
     private void filtroBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtroBTNActionPerformed
         String service = comboboxService.getSelectedItem().toString();
         String category = comboboxCateg.getSelectedItem().toString();
         applyFilter(service, category);
     }//GEN-LAST:event_filtroBTNActionPerformed
 
+    // Accion boton editar
     private void editBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBTNActionPerformed
         int selectedRow = tablePasswords.getSelectedRow();
 
@@ -312,12 +310,14 @@ public class DashboardPNL extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_editBTNActionPerformed
 
+    // Accion boton eliminar
     private void deleteBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBTNActionPerformed
         int selectedRow = tablePasswords.getSelectedRow();
 
         if (selectedRow != -1) {
             Long id = Long.valueOf(tablePasswords.getValueAt(selectedRow, 0).toString());
             int res = JOptionPane.showConfirmDialog(null, "¿Seguro que desea eliminar la contraseña con id " + id + " ?", "Confirmacion", JOptionPane.YES_NO_OPTION);
+
             if (res == JOptionPane.YES_OPTION) {
                 if (dao.deletePassword(id)) {
                     JOptionPane.showInternalMessageDialog(null, "Contraseña eliminada exitosamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
@@ -333,90 +333,15 @@ public class DashboardPNL extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_deleteBTNActionPerformed
 
+    // Cambia base de datos (Requiere autenticacion)
+    private void uploadDatabaseBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadDatabaseBTNActionPerformed
+        DB_Chooser.changeDatabase();
+    }//GEN-LAST:event_uploadDatabaseBTNActionPerformed
 
-    private void changeDbBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeDbBTNActionPerformed
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Seleccionar nueva base de datos");
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de base de datos (.db)", "db");
-        fileChooser.setFileFilter(filter);
-
-        int returnValue = fileChooser.showOpenDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-
-            if (!selectedFile.getName().toLowerCase().endsWith(".db")) {
-                selectedFile = new File(selectedFile.getAbsolutePath() + ".db");
-            }
-
-            if (selectedFile.exists()) {
-                // Solicitar credenciales
-                String[] credentials = showCredentialDialog();
-                if (credentials != null) {
-                    String username = credentials[0];
-                    String password = credentials[1];
-
-                    // Cerrar la conexión actual
-                    DatabaseConnection.close();
-
-                    // Guardar la ruta de la nueva base de datos temporalmente
-                    String dbPath = selectedFile.getAbsolutePath();
-
-                    // Inicializar la nueva base de datos
-                    DatabaseConnection.initializeDatabase(dbPath);
-
-                    // Autenticación con la nueva base de datos
-                    UserDAO userDAO = new UserDAO();
-                    if (userDAO.authenticateUser(username, password)) {
-                        // Si la autenticación es exitosa, guardar la nueva ruta
-                        ConfigManager.saveDatabasePath(dbPath);
-
-                        // Recargar datos de la nueva base de datos
-                        try {
-                            refreshDashboard();
-                            JOptionPane.showMessageDialog(null, "Base de datos cambiada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Error al inicializar el dashboard: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } else {
-                        // Si las credenciales son incorrectas, volver a cerrar la conexión
-                        DatabaseConnection.close();
-
-                        // Revertir a la base de datos anterior
-                        DatabaseConnection.initializeDatabase(ConfigManager.loadDatabasePath());
-                        try {
-                            refreshDashboard(); // Volver a cargar el dashboard
-                        } catch (Exception e) {
-                        }
-
-                        JOptionPane.showMessageDialog(null, "Credenciales incorrectas. Se mantiene en la base de datos actual.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "El archivo seleccionado no existe.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }//GEN-LAST:event_changeDbBTNActionPerformed
-
-    private String[] showCredentialDialog() {
-        JTextField userField = new JTextField();
-        JPasswordField passwordField = new JPasswordField();
-
-        Object[] message = {
-            "Usuario:", userField,
-            "Contraseña:", passwordField
-        };
-
-        int option = JOptionPane.showConfirmDialog(null, message, "Ingresar Credenciales", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            return new String[]{userField.getText(), new String(passwordField.getPassword())};
-        }
-        return null; // Si se cancela
-    }
-
+    // Refresca la pantalla principal
     private void refreshDashboard() throws Exception {
 
-        currentDBLBL.setText("Actual: " + Tools.getFileName(DatabaseConnection.getDatabasePath()));
+        currentDBLBL.setText("Actual: " + Tools.getFileName(DB_Connection.getDatabasePath()));
 
         passwordList = dao.getAllPasswords();
 
@@ -434,6 +359,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         Tools.loadIntoCombobox(comboboxService, services);
     }
 
+    // Inicializa la tabla y evento del buscador
     private void initializeOnce() {
         Tools.setImageLabel(searchLBL, "src/main/resources/Icons/search.png");
         configureTable();
@@ -458,7 +384,6 @@ public class DashboardPNL extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBTN;
-    private javax.swing.JButton changeDbBTN;
     private javax.swing.JComboBox<String> comboboxCateg;
     private javax.swing.JComboBox<String> comboboxService;
     private javax.swing.JLabel currentDBLBL;
@@ -469,5 +394,6 @@ public class DashboardPNL extends javax.swing.JPanel {
     private javax.swing.JLabel searchLBL;
     private javax.swing.JTextField searchTF;
     private javax.swing.JTable tablePasswords;
+    private javax.swing.JButton uploadDatabaseBTN;
     // End of variables declaration//GEN-END:variables
 }
