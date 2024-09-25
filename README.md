@@ -6,7 +6,7 @@ Aplicación de escritorio desarrollada en Java con Swing, diseñada para gestion
 
 ## Características
 
-- **Seguridad Avanzada**: Registro y autenticación de usuarios para proteger el acceso a la aplicación.
+- **Seguridad**: Registro y autenticación de usuarios para proteger el acceso a la aplicación.
 - **Gestión Segura de Contraseñas**: Almacenamiento y organización de contraseñas de forma segura, utilizando encriptación con clave secreta de 16 bits.
 - **Cambio y Creación de Base de Datos**: Opción para cambiar entre diferentes bases de datos o crear nuevas, en cualquier ubicacion que el usuario desee. (Se requiere autenticación con las credenciales del dueño de la base de datos a la que desea cambiar).
 - **Búsqueda Rápida**: Funcionalidad de búsqueda en tiempo real para encontrar contraseñas con nombre del servicio, nombre de usuario o categoria.
