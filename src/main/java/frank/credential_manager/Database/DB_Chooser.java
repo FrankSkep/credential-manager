@@ -74,6 +74,7 @@ public class DB_Chooser {
         return null;
     }
 
+    // Método para subir o crear una nueva base de datos a la app
     public static void changeDatabase() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Seleccionar nueva base de datos");
@@ -91,8 +92,8 @@ public class DB_Chooser {
             }
 
             if (selectedFile.exists()) {
-                // Solicitar credenciales
-                String[] credentials = showCredentialDialog();
+                // Si el archivo ya existe, solicitar credenciales
+                String[] credentials = showCredentialDialog("Inicia sesion");
 
                 if (credentials != null) {
                     String username = credentials[0];
@@ -135,13 +136,42 @@ public class DB_Chooser {
                     }
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "El archivo seleccionado no existe.", "Error", JOptionPane.ERROR_MESSAGE);
+                // Si el archivo no existe, preguntar al usuario si desea crearlo
+                int option = JOptionPane.showConfirmDialog(null, "El archivo no existe. ¿Deseas crearlo?", "Crear Base de Datos", JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    try {
+                        if (selectedFile.createNewFile()) {
+                            // Inicializar la nueva base de datos sin credenciales
+                            String dbPath = selectedFile.getAbsolutePath();
+                            DB_Connection.initializeDatabase(dbPath);
+                            ConfigFileManager.saveDatabasePath(dbPath); // Guardar la ruta de la nueva base de datos
+
+                            // Registrarse en la nueva base de datos
+                            String[] credentials = showCredentialDialog("Registrate");
+                            String username = credentials[0];
+                            String password = credentials[1];
+
+                            UserDAO userDAO = new UserDAO();
+                            userDAO.registerUser(username, password);
+
+                            // Actualizar el dashboard
+                            DashboardPNL.getInstance();
+                            JOptionPane.showMessageDialog(null, "Base de datos creada y cambiada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No se pudo crear la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Error al crear la base de datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "El archivo seleccionado no existe.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     // Muestra ventana para autenticarse en la nueva base de datos
-    private static String[] showCredentialDialog() {
+    private static String[] showCredentialDialog(String msg) {
         JTextField userField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
 
@@ -150,7 +180,7 @@ public class DB_Chooser {
             "Contraseña:", passwordField
         };
 
-        int option = JOptionPane.showConfirmDialog(null, message, "Ingresar Credenciales", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, message, msg, JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             return new String[]{userField.getText(), new String(passwordField.getPassword())};
         }
