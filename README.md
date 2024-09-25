@@ -2,14 +2,14 @@
 
 ## Descripción
 
-Aplicación de escritorio desarrollada en Java con Swing, diseñada para gestionar contraseñas de forma segura. Permite a los usuarios almacenar, organizar y acceder a sus contraseñas utilizando una base de datos local en formato `.db` con ubicación dinámica.
+Aplicación de escritorio desarrollada con Java, Swing y una base de datos SQLite, diseñada para gestionar contraseñas de forma segura. Permite a los usuarios almacenar, organizar y acceder a sus contraseñas utilizando una base de datos local con ubicación dinámica.
 
 ![Imagen](https://raw.githubusercontent.com/FrankSkep/Credential-Manager/refs/heads/main/screens/2.png?token=GHSAT0AAAAAACU2EQKLMVXQKS3CI6MWK7HYZXTT5UA)
 
 ## Características
 
 - **Seguridad**: Registro y autenticación de usuarios para proteger el acceso a la aplicación.
-- **Gestión Segura de Contraseñas**: Almacenamiento y organización de contraseñas de forma segura, utilizando encriptación con clave secreta de 16 bits.
+- **Gestión Segura de Contraseñas**: Almacenamiento y organización de contraseñas de forma segura, utilizando encriptación y descifrado con una clave de 16 bits.
 - **Cambio y Creación de Base de Datos**: Opción para cambiar entre diferentes bases de datos o crear nuevas, en cualquier ubicacion que el usuario desee. (Se requiere autenticación con las credenciales del dueño de la base de datos a la que desea cambiar).
 - **Búsqueda Rápida**: Funcionalidad de búsqueda en tiempo real para encontrar contraseñas con nombre del servicio, nombre de usuario o categoria.
 - **Filtrado por Categorías y Servicios**: Posibilidad de clasificar contraseñas en categorías y servicios para un acceso más ordenado y fácil.
