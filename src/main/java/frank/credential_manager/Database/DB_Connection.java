@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DatabaseConnection {
+public class DB_Connection {
 
     private static HikariDataSource dataSource;
     private static String databasePath; // Ruta dinámica de la base de datos
@@ -23,7 +23,7 @@ public class DatabaseConnection {
 
         // Crear las tablas después de inicializar la conexión si es necesario
         try (Connection conn = dataSource.getConnection()) {
-            DatabaseInitializer.initializeTables(conn);
+            DB_Initializer.initializeTables(conn);
         } catch (SQLException e) {
             System.out.println("Error inicializando las tablas: " + e.getMessage());
         }

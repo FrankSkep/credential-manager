@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DatabaseInitializer {
+public class DB_Initializer {
 
     // Método para inicializar y crear las tablas
     public static void initializeTables(Connection conn) throws SQLException {
