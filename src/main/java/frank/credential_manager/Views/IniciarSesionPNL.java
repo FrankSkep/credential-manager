@@ -9,14 +9,14 @@ import javax.swing.JPanel;
 
 public class IniciarSesionPNL extends javax.swing.JPanel {
 
-    private Object username;
+    private UserDAO userDAO;
 
     public IniciarSesionPNL() {
         initComponents();
-        username = Tools.getUserOrNot();
-        if (username != null) {
-            userTF.setText(username.toString());
-        }
+        userDAO = new UserDAO();
+
+        Tools.loadIntoCombobox(usersCBOX, userDAO.getAllUsernames());
+        usersCBOX.setSelectedIndex(0);
     }
 
     /**
@@ -31,7 +31,7 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
         iniciarBTN = new javax.swing.JButton();
         userLBL = new javax.swing.JLabel();
         passTF = new javax.swing.JPasswordField();
-        userTF = new javax.swing.JTextField();
+        usersCBOX = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -57,8 +57,8 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
 
         passTF.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
-        userTF.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        userTF.setEnabled(false);
+        usersCBOX.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        usersCBOX.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -66,12 +66,12 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(33, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(iniciarBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(iniciarBTN, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
                     .addComponent(userLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(userTF, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(passLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(passTF, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(passTF, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+                    .addComponent(usersCBOX, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(29, 29, 29))
         );
         jPanel1Layout.setVerticalGroup(
@@ -80,7 +80,7 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
                 .addGap(34, 34, 34)
                 .addComponent(userLBL)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(userTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(usersCBOX, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(passLBL)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -103,14 +103,14 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(360, 360, 360))
+                .addGap(402, 402, 402))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(24, 24, 24)
                 .addComponent(jLabel1)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -119,17 +119,17 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(296, Short.MAX_VALUE)
+                .addContainerGap(340, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(278, 278, 278))
+                .addGap(324, 324, 324))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(95, 95, 95)
+                .addGap(97, 97, 97)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(132, Short.MAX_VALUE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -137,13 +137,13 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
 
         String password = String.valueOf(passTF.getPassword());
 
-        UserDAO dao = new UserDAO();
-
-        User user = dao.authenticateUser(userTF.getText(), password);
+        User user = userDAO.authenticateUser(String.valueOf(usersCBOX.getSelectedItem()), password);
         if (user != null) {
             JOptionPane.showMessageDialog(null, "Autenticacion exitosa", "Info", JOptionPane.INFORMATION_MESSAGE);
             UserSession.getInstance().setUsuario(user);
             Tools.changePanel(DashboardPNL.getInstance(), (JPanel) this.getParent());
+        } else {
+            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Error de autenticacion", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_iniciarBTNActionPerformed
 
@@ -156,6 +156,6 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
     private javax.swing.JLabel passLBL;
     private javax.swing.JPasswordField passTF;
     private javax.swing.JLabel userLBL;
-    private javax.swing.JTextField userTF;
+    private javax.swing.JComboBox<String> usersCBOX;
     // End of variables declaration//GEN-END:variables
 }

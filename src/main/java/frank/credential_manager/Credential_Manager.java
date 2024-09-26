@@ -16,6 +16,7 @@ public class Credential_Manager extends javax.swing.JFrame {
 
         setLocationRelativeTo(null); // Iniciar ventana en el centro
         setResizable(false); // Desactiva redimension
+        setTitle("Administrador de credenciales");
 
         DB_Chooser.initializeDbFile(); // Inicializa base de datos
 
@@ -43,11 +44,11 @@ public class Credential_Manager extends javax.swing.JFrame {
         contenidoPNL.setLayout(contenidoPNLLayout);
         contenidoPNLLayout.setHorizontalGroup(
             contenidoPNLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1000, Short.MAX_VALUE)
+            .addGap(0, 1090, Short.MAX_VALUE)
         );
         contenidoPNLLayout.setVerticalGroup(
             contenidoPNLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
+            .addGap(0, 640, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
