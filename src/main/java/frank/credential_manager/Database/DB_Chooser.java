@@ -1,10 +1,14 @@
 package frank.credential_manager.Database;
 
+import frank.credential_manager.Authentication.UserSession;
 import frank.credential_manager.DAO.UserDAO;
+import frank.credential_manager.Models.User;
 import frank.credential_manager.Utils.Tools;
 import frank.credential_manager.Views.DashboardPNL;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -82,6 +86,8 @@ public class DB_Chooser {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de base de datos (.db)", "db");
         fileChooser.setFileFilter(filter);
 
+        UserDAO userDAO = new UserDAO();
+
         int returnValue = fileChooser.showOpenDialog(null);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -93,7 +99,7 @@ public class DB_Chooser {
 
             if (selectedFile.exists()) {
                 // Si el archivo ya existe, solicitar credenciales
-                String[] credentials = showCredentialDialog("Inicia sesion");
+                String[] credentials = showLoginDialog("Inicia sesion", userDAO.getAllUsers());
 
                 if (credentials != null) {
                     String username = credentials[0];
@@ -109,8 +115,12 @@ public class DB_Chooser {
                     DB_Connection.initializeDatabase(dbPath);
 
                     // Autenticación con la nueva base de datos
-                    UserDAO userDAO = new UserDAO();
-                    if (userDAO.authenticateUser(username, password)) {
+                    User user = userDAO.authenticateUser(username, password);
+
+                    if (user != null) {
+
+                        UserSession.getInstance().setUsuario(user);
+
                         // Si la autenticación es exitosa, guardar la nueva ruta
                         ConfigFileManager.saveDatabasePath(dbPath);
 
@@ -147,12 +157,14 @@ public class DB_Chooser {
                             ConfigFileManager.saveDatabasePath(dbPath); // Guardar la ruta de la nueva base de datos
 
                             // Registrarse en la nueva base de datos
-                            String[] credentials = showCredentialDialog("Registrate");
+                            String[] credentials = showRegisterDialog("Registrate");
                             String username = credentials[0];
                             String password = credentials[1];
 
-                            UserDAO userDAO = new UserDAO();
-                            userDAO.registerUser(username, password);
+                            User newUser = userDAO.registerUser(username, password);
+                            if (newUser != null) {
+                                UserSession.getInstance().setUsuario(newUser);
+                            }
 
                             // Actualizar el dashboard
                             DashboardPNL.getInstance();
@@ -171,7 +183,24 @@ public class DB_Chooser {
     }
 
     // Muestra ventana para autenticarse en la nueva base de datos
-    private static String[] showCredentialDialog(String msg) {
+    private static String[] showLoginDialog(String msg, List<String> usuarios) {
+        // Crear un ComboBox para mostrar los usuarios
+        JComboBox<String> userComboBox = new JComboBox<>(usuarios.toArray(new String[0]));
+        JPasswordField passwordField = new JPasswordField();
+
+        Object[] message = {
+            "Usuario:", userComboBox, // Usar el ComboBox en lugar de JTextField
+            "Contraseña:", passwordField
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message, msg, JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            return new String[]{(String) userComboBox.getSelectedItem(), new String(passwordField.getPassword())};
+        }
+        return null; // Si se cancela
+    }
+
+    private static String[] showRegisterDialog(String msg) {
         JTextField userField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
 

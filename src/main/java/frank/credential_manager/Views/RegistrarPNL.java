@@ -1,6 +1,8 @@
 package frank.credential_manager.Views;
 
+import frank.credential_manager.Authentication.UserSession;
 import frank.credential_manager.DAO.UserDAO;
+import frank.credential_manager.Models.User;
 import frank.credential_manager.Utils.Tools;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -134,9 +136,11 @@ public class RegistrarPNL extends javax.swing.JPanel {
         String password = String.valueOf(passwordTF.getPassword());
 
         UserDAO dao = new UserDAO();
+        User user = dao.registerUser(username, password);
 
-        if (dao.registerUser(username, password)) {
+        if (user != null) {
             JOptionPane.showMessageDialog(null, "Se ha registrado exitosamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+            UserSession.getInstance().setUsuario(user);
             Tools.changePanel(DashboardPNL.getInstance(), (JPanel) this.getParent());
         }
     }//GEN-LAST:event_registerBTNActionPerformed

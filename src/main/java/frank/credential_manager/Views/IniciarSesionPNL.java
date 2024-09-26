@@ -1,6 +1,8 @@
 package frank.credential_manager.Views;
 
+import frank.credential_manager.Authentication.UserSession;
 import frank.credential_manager.DAO.UserDAO;
+import frank.credential_manager.Models.User;
 import frank.credential_manager.Utils.Tools;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -137,8 +139,10 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
 
         UserDAO dao = new UserDAO();
 
-        if (dao.authenticateUser(username.toString(), password)) {
+        User user = dao.authenticateUser(userTF.getText(), password);
+        if (user != null) {
             JOptionPane.showMessageDialog(null, "Autenticacion exitosa", "Info", JOptionPane.INFORMATION_MESSAGE);
+            UserSession.getInstance().setUsuario(user);
             Tools.changePanel(DashboardPNL.getInstance(), (JPanel) this.getParent());
         }
     }//GEN-LAST:event_iniciarBTNActionPerformed

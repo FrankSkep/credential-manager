@@ -30,7 +30,7 @@ public class PasswordDAO {
 
     public boolean savePassword(Password password) throws Exception {
 
-        String query = "INSERT INTO passwords (service_name, username, password, category) VALUES (?, ?, ?, ?)";
+       String query = "INSERT INTO passwords (service_name, username, password, category, user_id) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DB_Connection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             String encryptedPassword = Encrypter.encryptPassword(password.getPassword());
