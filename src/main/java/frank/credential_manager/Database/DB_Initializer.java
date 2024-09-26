@@ -21,7 +21,9 @@ public class DB_Initializer {
                 + "service_name TEXT NOT NULL, "
                 + "username TEXT NOT NULL, "
                 + "password TEXT NOT NULL, "
-                + "category TEXT NOT NULL)";
+                + "category TEXT NOT NULL, "
+                + "user_id INTEGER, "
+                + "FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             // Ejecutar las sentencias SQL para ambas tablas

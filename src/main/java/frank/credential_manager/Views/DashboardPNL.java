@@ -69,7 +69,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         searchLBL = new javax.swing.JLabel();
         currentDBLBL = new javax.swing.JLabel();
 
-        setBackground(new java.awt.Color(153, 204, 255));
+        setBackground(new java.awt.Color(204, 204, 204));
 
         tablePasswords.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         tablePasswords.setModel(new javax.swing.table.DefaultTableModel(

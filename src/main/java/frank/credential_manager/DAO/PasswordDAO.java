@@ -133,39 +133,6 @@ public class PasswordDAO {
         return services;
     }
 
-    public List<Password> getPasswordsByService(String service_name) throws Exception {
-        String query = "SELECT id, username, password, category FROM passwords WHERE service_name = ?";
-
-        List<Password> passwords = new ArrayList<>();
-
-        try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
-
-            // Establecer el parámetro del servicio
-            stmt.setString(1, service_name);
-
-            // Ejecutar la consulta
-            ResultSet rs = stmt.executeQuery();
-
-            // Iterar sobre los resultados
-            while (rs.next()) {
-                Long id = rs.getLong("id");
-                String username = rs.getString("username");
-                String encryptedPassword = rs.getString("password");
-                String category = rs.getString("category");
-
-                // Desencriptar la contraseña
-                String decryptedPassword = Encrypter.decryptPassword(encryptedPassword);
-
-                // Crear el objeto Password y agregarlo a la lista
-                passwords.add(new Password(id, service_name, username, decryptedPassword, category));
-            }
-        } catch (SQLException e) {
-            JOptionPane.showInternalMessageDialog(null, "Ocurrio un error : " + e.toString(), "Error", JOptionPane.WARNING_MESSAGE);
-        }
-
-        return passwords;
-    }
-
     // Método para obtener todas las categorías
     public List<String> getAllCategories() {
         String query = "SELECT DISTINCT category FROM passwords";
