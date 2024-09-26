@@ -1,5 +1,6 @@
 package frank.credential_manager.Views;
 
+import frank.credential_manager.Authentication.UserSession;
 import frank.credential_manager.DAO.PasswordDAO;
 import frank.credential_manager.Models.Password;
 import frank.credential_manager.Utils.Tools;
@@ -206,7 +207,7 @@ public class AgregarPassPNL extends javax.swing.JPanel {
         Password newPassword = new Password(service, username, password, category);
 
         try {
-            if (dao.savePassword(newPassword)) {
+            if (dao.savePassword(newPassword, UserSession.getInstance().getUsuario().getId())) {
                 JOptionPane.showInternalMessageDialog(null, "Se ha agregado la contraseña", "Exito", JOptionPane.INFORMATION_MESSAGE);
                 cleanFields();
             }

@@ -1,9 +1,11 @@
 package frank.credential_manager.Views;
 
+import frank.credential_manager.Authentication.UserSession;
 import frank.credential_manager.DAO.PasswordDAO;
 import frank.credential_manager.Database.DB_Connection;
 import frank.credential_manager.Models.Password;
 import frank.credential_manager.Database.DB_Chooser;
+import frank.credential_manager.Models.User;
 import frank.credential_manager.Utils.Tools;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class DashboardPNL extends javax.swing.JPanel {
     private static DashboardPNL instance;
     private PasswordDAO dao;
     private List<Password> passwordList;
+    private User userSession = UserSession.getInstance().getUsuario();
 
     // Constructor privado para evitar instanciación desde fuera
     private DashboardPNL() {
@@ -319,10 +322,10 @@ public class DashboardPNL extends javax.swing.JPanel {
             int res = JOptionPane.showConfirmDialog(null, "¿Seguro que desea eliminar la contraseña con id " + id + " ?", "Confirmacion", JOptionPane.YES_NO_OPTION);
 
             if (res == JOptionPane.YES_OPTION) {
-                if (dao.deletePassword(id)) {
+                if (dao.deletePassword(id, userSession.getId())) {
                     JOptionPane.showInternalMessageDialog(null, "Contraseña eliminada exitosamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
                     try {
-                        Tools.entablarContrasenias(tablePasswords, dao.getAllPasswords());
+                        Tools.entablarContrasenias(tablePasswords, dao.getAllPasswords(userSession.getId()));
                     } catch (Exception e) {
                         System.out.println("Error " + e.getMessage());
                     }
@@ -343,7 +346,7 @@ public class DashboardPNL extends javax.swing.JPanel {
 
         currentDBLBL.setText("Actual: " + Tools.getFileName(DB_Connection.getDatabasePath()));
 
-        passwordList = dao.getAllPasswords();
+        passwordList = dao.getAllPasswords(userSession.getId());
 
         Tools.entablarContrasenias(tablePasswords, passwordList);
 

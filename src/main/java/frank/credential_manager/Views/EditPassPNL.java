@@ -1,5 +1,6 @@
 package frank.credential_manager.Views;
 
+import frank.credential_manager.Authentication.UserSession;
 import frank.credential_manager.DAO.PasswordDAO;
 import frank.credential_manager.Models.Password;
 import frank.credential_manager.Utils.Tools;
@@ -224,7 +225,7 @@ public class EditPassPNL extends javax.swing.JPanel {
         }
 
         try {
-            if (dao.updatePassword(new Password(id, service, username, password, category))) {
+            if (dao.updatePassword(new Password(id, service, username, password, category), UserSession.getInstance().getUsuario().getId())) {
                 JOptionPane.showInternalMessageDialog(null, "Se ha actualizado la contraseña", "Exito", JOptionPane.INFORMATION_MESSAGE);
                 Tools.changePanel(DashboardPNL.getInstance(), (JPanel) this.getParent());
             } else {

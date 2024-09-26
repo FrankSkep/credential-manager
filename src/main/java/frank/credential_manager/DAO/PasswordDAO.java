@@ -28,9 +28,9 @@ public class PasswordDAO {
         return instance;
     }
 
-    public boolean savePassword(Password password) throws Exception {
+    public boolean savePassword(Password password, Long userId) throws Exception {
 
-       String query = "INSERT INTO passwords (service_name, username, password, category, user_id) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO passwords (service_name, username, password, category, user_id) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DB_Connection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             String encryptedPassword = Encrypter.encryptPassword(password.getPassword());
@@ -39,6 +39,7 @@ public class PasswordDAO {
             stmt.setString(2, password.getUsername());
             stmt.setString(3, encryptedPassword);
             stmt.setString(4, password.getCategory());
+            stmt.setLong(5, userId);
 
             return stmt.executeUpdate() > 0;
 
@@ -48,8 +49,8 @@ public class PasswordDAO {
         return false;
     }
 
-    public boolean updatePassword(Password newPassword) throws Exception {
-        String query = "UPDATE passwords SET service_name = ?, username = ?, password = ?, category = ? WHERE id = ?";
+    public boolean updatePassword(Password newPassword, Long userId) throws Exception {
+        String query = "UPDATE passwords SET service_name = ?, username = ?, password = ?, category = ? WHERE id = ? AND user_id = ?";
 
         // Cifrar la nueva contraseña antes de actualizarla
         String encryptedPassword = Encrypter.encryptPassword(newPassword.getPassword());
@@ -62,6 +63,7 @@ public class PasswordDAO {
             stmt.setString(3, encryptedPassword);
             stmt.setString(4, newPassword.getCategory());
             stmt.setLong(5, newPassword.getId());
+            stmt.setLong(6, userId);
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -70,12 +72,13 @@ public class PasswordDAO {
         return false;
     }
 
-    public boolean deletePassword(Long id) {
-        String query = "DELETE FROM passwords WHERE id = ?";
+    public boolean deletePassword(Long id, Long userId) {
+        String query = "DELETE FROM passwords WHERE id = ? AND user_id = ?";
 
         try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
             stmt.setLong(1, id);
+            stmt.setLong(2, userId);
 
             return stmt.executeUpdate() > 0;
 
@@ -85,12 +88,14 @@ public class PasswordDAO {
         return false;
     }
 
-    public List<Password> getAllPasswords() throws Exception {
-        String query = "SELECT id, service_name, username, password, category FROM passwords";
+    public List<Password> getAllPasswords(Long userId) throws Exception {
+        String query = "SELECT id, service_name, username, password, category FROM passwords WHERE user_id = ?";
 
         List<Password> passwords = new ArrayList<>();
 
         try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
+
+            stmt.setLong(1, userId);
 
             // Ejecutar la consulta
             ResultSet rs = stmt.executeQuery();

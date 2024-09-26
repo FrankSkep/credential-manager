@@ -99,7 +99,7 @@ public class DB_Chooser {
 
             if (selectedFile.exists()) {
                 // Si el archivo ya existe, solicitar credenciales
-                String[] credentials = showLoginDialog("Inicia sesion", userDAO.getAllUsers());
+                String[] credentials = showLoginDialog("Inicia sesion", userDAO.getAllUsernames());
 
                 if (credentials != null) {
                     String username = credentials[0];

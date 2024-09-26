@@ -24,10 +24,18 @@ public class UserDAO {
             stmt.setString(2, hashedPassword);
             stmt.setString(3, salt);
 
-            ResultSet resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-                Integer id = resultSet.getInt("id");
-                return new User(id, username, hashedPassword);
+            // Ejecutar el INSERT
+            int affectedRows = stmt.executeUpdate();
+
+            // Verificar si se afectó alguna fila
+            if (affectedRows > 0) {
+                // Obtener las claves generadas
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        Long id = generatedKeys.getLong(1); // Obtener el ID generado
+                        return new User(id, username, hashedPassword);
+                    }
+                }
             }
 
         } catch (SQLException e) {
@@ -38,14 +46,14 @@ public class UserDAO {
 
     // Método para verificar las credenciales de usuario
     public User authenticateUser(String username, String password) {
-        String query = "SELECT password_hash, salt FROM users WHERE username = ?";
+        String query = "SELECT id, password_hash, salt FROM users WHERE username = ?";
         try (Connection conn = DB_Connection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, username);
             ResultSet resultSet = stmt.executeQuery();
 
             if (resultSet.next()) {
-                Integer id = resultSet.getInt("id");
+                Long id = resultSet.getLong("id");
                 String storedPassword = resultSet.getString("password_hash");
                 String storedSalt = resultSet.getString("salt"); // Recupera el salt de la base de datos
                 String hashedPassword = Hashing.hashPassword(password, storedSalt);
@@ -61,7 +69,7 @@ public class UserDAO {
         return null;
     }
 
-    public List<String> getAllUsers() {
+    public List<String> getAllUsernames() {
         String query = "SELECT username FROM users";
 
         List<String> usernames = new ArrayList<>();
