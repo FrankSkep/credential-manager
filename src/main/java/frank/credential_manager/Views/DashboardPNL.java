@@ -2,6 +2,7 @@ package frank.credential_manager.Views;
 
 import frank.credential_manager.Authentication.UserSession;
 import frank.credential_manager.DAO.PasswordDAO;
+import frank.credential_manager.DAO.UserDAO;
 import frank.credential_manager.Database.DB_Connection;
 import frank.credential_manager.Models.Password;
 import frank.credential_manager.Database.DB_Chooser;
@@ -11,24 +12,28 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.JTableHeader;
 
 public class DashboardPNL extends javax.swing.JPanel {
 
-    private static DashboardPNL instance;
-    private PasswordDAO dao;
-    private List<Password> passwordList;
-    private User userSession = UserSession.getInstance().getUsuario();
+    private static DashboardPNL instance; // Instancia unica del panel
+    private List<Password> passwordList; // Listado de contraseñas
+    private PasswordDAO passDAO; // DAO Password
+    private UserSession userSession; // Sesion activa
 
     // Constructor privado para evitar instanciación desde fuera
     private DashboardPNL() {
         initComponents();
         initializeOnce();
-        dao = PasswordDAO.getInstance();
+
+        passDAO = PasswordDAO.getInstance();
+        userSession = UserSession.getInstance();
 
         try {
             refreshDashboard();
@@ -71,6 +76,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         uploadDatabaseBTN = new javax.swing.JButton();
         searchLBL = new javax.swing.JLabel();
         currentDBLBL = new javax.swing.JLabel();
+        changeAccountBTN = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
 
@@ -176,6 +182,13 @@ public class DashboardPNL extends javax.swing.JPanel {
         currentDBLBL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         currentDBLBL.setText(" a");
 
+        changeAccountBTN.setText("Cambiar cuenta");
+        changeAccountBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeAccountBTNActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -201,6 +214,8 @@ public class DashboardPNL extends javax.swing.JPanel {
                             .addGap(18, 18, 18)
                             .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(changeAccountBTN)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(uploadDatabaseBTN)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(currentDBLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -216,7 +231,8 @@ public class DashboardPNL extends javax.swing.JPanel {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(uploadDatabaseBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(searchLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(changeAccountBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
@@ -322,10 +338,10 @@ public class DashboardPNL extends javax.swing.JPanel {
             int res = JOptionPane.showConfirmDialog(null, "¿Seguro que desea eliminar la contraseña con id " + id + " ?", "Confirmacion", JOptionPane.YES_NO_OPTION);
 
             if (res == JOptionPane.YES_OPTION) {
-                if (dao.deletePassword(id, userSession.getId())) {
+                if (passDAO.deletePassword(id, userSession.getUsuario().getId())) {
                     JOptionPane.showInternalMessageDialog(null, "Contraseña eliminada exitosamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
                     try {
-                        Tools.entablarContrasenias(tablePasswords, dao.getAllPasswords(userSession.getId()));
+                        Tools.entablarContrasenias(tablePasswords, passDAO.getAllPasswords(userSession.getUsuario().getId()));
                     } catch (Exception e) {
                         System.out.println("Error " + e.getMessage());
                     }
@@ -341,22 +357,77 @@ public class DashboardPNL extends javax.swing.JPanel {
         DB_Chooser.changeDatabase();
     }//GEN-LAST:event_uploadDatabaseBTNActionPerformed
 
+    private void changeAccountBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeAccountBTNActionPerformed
+
+        // Opciones de botones
+        String[] options = {"Crear Cuenta", "Usar Cuenta Existente"};
+
+        // Mostrar el cuadro de diálogo
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "¿Qué deseas hacer?",
+                "Selecciona una Opción",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]
+        );
+
+        if (choice == 0) { // Opción "Crear Cuenta"
+            createAccount();
+        } else if (choice == 1) { // Opción "Usar Cuenta Existente"
+            useExistingAccount();
+        }
+
+    }//GEN-LAST:event_changeAccountBTNActionPerformed
+
+    private void createAccount() {
+        String[] credentials = DB_Chooser.showRegisterDialog("Registrate");
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.registerUser(credentials[0], credentials[1]);
+
+        if (user != null) {
+            JOptionPane.showMessageDialog(null, "Te registraste con éxito.", "INFO", JOptionPane.INFORMATION_MESSAGE);
+            userSession.setUsuario(user);
+            try {
+                refreshDashboard();
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private void useExistingAccount() {
+        UserDAO userDAO = new UserDAO();
+        String[] credentials = DB_Chooser.showLoginDialog("Inicia sesion", userDAO.getAllUsernames());
+        User user = userDAO.authenticateUser(credentials[0], credentials[1]);
+
+        if (user != null) {
+            JOptionPane.showMessageDialog(null, "Autenticacion exitosa.", "INFO", JOptionPane.INFORMATION_MESSAGE);
+            userSession.setUsuario(user);
+            try {
+                refreshDashboard();
+            } catch (Exception e) {
+            }
+        }
+    }
+
     // Refresca la pantalla principal
     private void refreshDashboard() throws Exception {
 
         currentDBLBL.setText("Actual: " + Tools.getFileName(DB_Connection.getDatabasePath()));
 
-        passwordList = dao.getAllPasswords(userSession.getId());
+        passwordList = passDAO.getAllPasswords(userSession.getUsuario().getId());
 
         Tools.entablarContrasenias(tablePasswords, passwordList);
 
         List<String> categories = new ArrayList<>();
         categories.add("Categoria");
-        categories.addAll(dao.getAllCategories());
+        categories.addAll(passDAO.getAllCategories());
 
         List<String> services = new ArrayList<>();
         services.add("Servicio");
-        services.addAll(dao.getAllServices());
+        services.addAll(passDAO.getAllServices());
 
         Tools.loadIntoCombobox(comboboxCateg, categories);
         Tools.loadIntoCombobox(comboboxService, services);
@@ -387,6 +458,7 @@ public class DashboardPNL extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBTN;
+    private javax.swing.JButton changeAccountBTN;
     private javax.swing.JComboBox<String> comboboxCateg;
     private javax.swing.JComboBox<String> comboboxService;
     private javax.swing.JLabel currentDBLBL;

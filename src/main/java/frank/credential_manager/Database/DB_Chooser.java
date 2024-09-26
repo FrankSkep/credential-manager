@@ -17,7 +17,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class DB_Chooser {
 
-    // Inicializa la base de datos
+    // Inicializa la base de datos local
     public static void initializeDbFile() {
         // Cargar la ruta de la base de datos desde configuración
         String dbPath = ConfigFileManager.loadDatabasePath();
@@ -39,8 +39,8 @@ public class DB_Chooser {
         }
     }
 
-    // Método que pide al usuario que seleccione o cree una base de datos
-    public static String promptUserForDatabase() {
+    // Método que pide al usuario que seleccione o cree una base de datos al arrancar el programa
+    private static String promptUserForDatabase() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Seleccionar o crear base de datos");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -183,7 +183,7 @@ public class DB_Chooser {
     }
 
     // Muestra ventana para autenticarse en la nueva base de datos
-    private static String[] showLoginDialog(String msg, List<String> usuarios) {
+    public static String[] showLoginDialog(String msg, List<String> usuarios) {
         // Crear un ComboBox para mostrar los usuarios
         JComboBox<String> userComboBox = new JComboBox<>(usuarios.toArray(new String[0]));
         JPasswordField passwordField = new JPasswordField();
@@ -200,7 +200,7 @@ public class DB_Chooser {
         return null; // Si se cancela
     }
 
-    private static String[] showRegisterDialog(String msg) {
+    public static String[] showRegisterDialog(String msg) {
         JTextField userField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
 
