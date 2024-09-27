@@ -411,17 +411,27 @@ public class DashboardPNL extends javax.swing.JPanel {
     private void useExistingAccount() {
         UserDAO userDAO = new UserDAO();
         String[] credentials = DB_Chooser.showLoginDialog("Inicia sesion", userDAO.getAllUsernames());
-        User user = userDAO.authenticateUser(credentials[0], credentials[1]);
 
-        if (user != null) {
-            JOptionPane.showMessageDialog(null, "Autenticacion exitosa.", "INFO", JOptionPane.INFORMATION_MESSAGE);
-            userSession.setUsuario(user);
-            try {
-                refreshDashboard();
-            } catch (Exception e) {
+        if (credentials != null) {
+
+            if (!credentials[0].equals(userSession.getUsuario().getUsername())) {
+
+                // verificar que no sea la misma cuenta que esta usando
+                User user = userDAO.authenticateUser(credentials[0], credentials[1]);
+
+                if (user != null) {
+                    JOptionPane.showMessageDialog(null, "Autenticacion exitosa.", "INFO", JOptionPane.INFORMATION_MESSAGE);
+                    userSession.setUsuario(user); // Establecer el nuevo usuario autenticado
+                    try {
+                        refreshDashboard();
+                    } catch (Exception e) {
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Error de autenticacion", JOptionPane.WARNING_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Ya te encuentras en esa cuenta.", "INFO", JOptionPane.INFORMATION_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Error de autenticacion", JOptionPane.WARNING_MESSAGE);
         }
     }
 

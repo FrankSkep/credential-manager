@@ -98,6 +98,15 @@ public class DB_Chooser {
             }
 
             if (selectedFile.exists()) {
+                // Cerrar la conexión actual
+                DB_Connection.close();
+
+                // Guardar la ruta de la nueva base de datos temporalmente
+                String dbPath = selectedFile.getAbsolutePath();
+
+                // Inicializar la nueva base de datos
+                DB_Connection.initializeDatabase(dbPath);
+
                 // Si el archivo ya existe, solicitar credenciales
                 String[] credentials = showLoginDialog("Inicia sesion", userDAO.getAllUsernames());
 
@@ -105,21 +114,12 @@ public class DB_Chooser {
                     String username = credentials[0];
                     String password = credentials[1];
 
-                    // Cerrar la conexión actual
-                    DB_Connection.close();
-
-                    // Guardar la ruta de la nueva base de datos temporalmente
-                    String dbPath = selectedFile.getAbsolutePath();
-
-                    // Inicializar la nueva base de datos
-                    DB_Connection.initializeDatabase(dbPath);
-
                     // Autenticación con la nueva base de datos
                     User user = userDAO.authenticateUser(username, password);
 
                     if (user != null) {
 
-                        UserSession.getInstance().setUsuario(user);
+                        UserSession.getInstance().setUsuario(user); // Establecer sesion usuario activo
 
                         // Si la autenticación es exitosa, guardar la nueva ruta
                         ConfigFileManager.saveDatabasePath(dbPath);
@@ -141,7 +141,6 @@ public class DB_Chooser {
                             DashboardPNL.getInstance(); // Volver a cargar el dashboard
                         } catch (Exception e) {
                         }
-
                         JOptionPane.showMessageDialog(null, "Credenciales incorrectas. Se mantiene en la base de datos actual.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -177,8 +176,6 @@ public class DB_Chooser {
                     }
                 }
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "El archivo seleccionado no existe.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
