@@ -1,3 +1,6 @@
 target/
 *.properties
 *.db
+
+*.idea/
+out/
