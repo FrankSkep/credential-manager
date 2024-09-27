@@ -1,3 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: frank.credential_manager.Credential_Manager
-
