@@ -8,6 +8,7 @@ import frank.credential_manager.Views.DashboardPNL;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -185,8 +186,16 @@ public class DB_Chooser {
         JComboBox<String> userComboBox = new JComboBox<>(usuarios.toArray(new String[0]));
         JPasswordField passwordField = new JPasswordField();
 
+        Optional<String> resultado = usuarios.stream()
+                .filter(elemento -> elemento.contains(UserSession.getInstance().getUsuario().getUsername()))
+                .findFirst();  // Obtiene el primer elemento que coincida
+
+        // Muestra seleccionada la cuenta que usa actualmente
+        resultado.ifPresentOrElse(user -> userComboBox.setSelectedItem(resultado.get()),
+                () -> userComboBox.setSelectedIndex(0));
+
         Object[] message = {
-            "Usuario:", userComboBox, // Usar el ComboBox en lugar de JTextField
+            "Usuario:", userComboBox,
             "Contraseña:", passwordField
         };
 

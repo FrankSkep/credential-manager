@@ -76,6 +76,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         currentDBLBL = new javax.swing.JLabel();
         changeAccountBTN = new javax.swing.JButton();
         currentUserLBL = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(169, 197, 192));
 
@@ -181,6 +182,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         currentDBLBL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         currentDBLBL.setText("base datos actual");
 
+        changeAccountBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         changeAccountBTN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/user_icon.png"))); // NOI18N
         changeAccountBTN.setText("Cambiar cuenta");
         changeAccountBTN.addActionListener(new java.awt.event.ActionListener() {
@@ -192,6 +194,10 @@ public class DashboardPNL extends javax.swing.JPanel {
         currentUserLBL.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         currentUserLBL.setForeground(new java.awt.Color(0, 0, 0));
         currentUserLBL.setText("usuario");
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/delete_account.png"))); // NOI18N
+        jButton1.setText("Eliminar cuenta");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -224,7 +230,9 @@ public class DashboardPNL extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(changeAccountBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(changeAccountBTN)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(uploadDatabaseBTN))
                             .addComponent(jScrollPane1))))
@@ -242,7 +250,8 @@ public class DashboardPNL extends javax.swing.JPanel {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(uploadDatabaseBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(changeAccountBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(changeAccountBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(searchLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -255,7 +264,7 @@ public class DashboardPNL extends javax.swing.JPanel {
                         .addComponent(comboboxService, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(filtroBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(addBTN, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addGap(40, 40, 40))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -395,15 +404,18 @@ public class DashboardPNL extends javax.swing.JPanel {
 
     private void createAccount() {
         String[] credentials = DB_Chooser.showRegisterDialog("Registrate");
-        UserDAO userDAO = new UserDAO();
-        User user = userDAO.registerUser(credentials[0], credentials[1]);
 
-        if (user != null) {
-            JOptionPane.showMessageDialog(null, "Te registraste con éxito.", "INFO", JOptionPane.INFORMATION_MESSAGE);
-            userSession.setUsuario(user);
-            try {
-                refreshDashboard();
-            } catch (Exception e) {
+        if (!credentials[0].isBlank() || !credentials[1].isBlank()) {
+            UserDAO userDAO = new UserDAO();
+            User user = userDAO.registerUser(credentials[0], credentials[1]);
+
+            if (user != null) {
+                JOptionPane.showMessageDialog(null, "Te registraste con éxito.", "INFO", JOptionPane.INFORMATION_MESSAGE);
+                userSession.setUsuario(user);
+                try {
+                    refreshDashboard();
+                } catch (Exception e) {
+                }
             }
         }
     }
@@ -491,6 +503,7 @@ public class DashboardPNL extends javax.swing.JPanel {
     private javax.swing.JButton deleteBTN;
     private javax.swing.JButton editBTN;
     private javax.swing.JButton filtroBTN;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel searchLBL;
     private javax.swing.JTextField searchTF;

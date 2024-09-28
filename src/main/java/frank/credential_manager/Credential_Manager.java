@@ -17,7 +17,7 @@ public class Credential_Manager extends javax.swing.JFrame {
 
         setLocationRelativeTo(null); // Iniciar ventana en el centro
         setResizable(false); // Desactiva redimension
-        setTitle("Administrador de credenciales");
+        setTitle("Credential Manager");
 
         DB_Chooser.initializeDbFile(); // Inicializa base de datos
 
