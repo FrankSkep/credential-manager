@@ -2,6 +2,7 @@ package frank.credential_manager.Views;
 
 import frank.credential_manager.Authentication.UserSession;
 import frank.credential_manager.DAO.UserDAO;
+import frank.credential_manager.Database.DB_Chooser;
 import frank.credential_manager.Models.User;
 import frank.credential_manager.Utils.Tools;
 import javax.swing.JOptionPane;
@@ -32,6 +33,7 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
         userLBL = new javax.swing.JLabel();
         passTF = new javax.swing.JPasswordField();
         usersCBOX = new javax.swing.JComboBox<>();
+        changeDbBTN = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -60,6 +62,16 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
         usersCBOX.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         usersCBOX.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
 
+        changeDbBTN.setBackground(new java.awt.Color(0, 153, 0));
+        changeDbBTN.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        changeDbBTN.setForeground(new java.awt.Color(255, 255, 255));
+        changeDbBTN.setText("Cambiar base de datos");
+        changeDbBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeDbBTNActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -71,7 +83,8 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
                     .addComponent(userLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(passLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(passTF, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
-                    .addComponent(usersCBOX, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(usersCBOX, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(changeDbBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(29, 29, 29))
         );
         jPanel1Layout.setVerticalGroup(
@@ -87,7 +100,9 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
                 .addComponent(passTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(iniciarBTN)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(changeDbBTN)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(0, 102, 204));
@@ -129,7 +144,7 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(97, 97, 97)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(146, Short.MAX_VALUE))
+                .addContainerGap(108, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -147,8 +162,14 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_iniciarBTNActionPerformed
 
+    private void changeDbBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeDbBTNActionPerformed
+        DB_Chooser.changeDatabase();
+//        Tools.defineActionOnStart((JPanel) this.getParent());
+    }//GEN-LAST:event_changeDbBTNActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton changeDbBTN;
     private javax.swing.JButton iniciarBTN;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;

@@ -69,6 +69,18 @@ public class UserDAO {
         return null;
     }
 
+    public boolean deleteAccount(Long id) {
+        String query = "DELETE FROM users WHERE id = ?";
+
+        try (Connection conn = DB_Connection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setLong(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Detalles : " + e.toString(), "Ocurrio un error", JOptionPane.WARNING_MESSAGE);
+        }
+        return false;
+    }
+
     public List<String> getAllUsernames() {
         String query = "SELECT username FROM users";
 

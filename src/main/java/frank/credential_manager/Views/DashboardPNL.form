@@ -50,9 +50,9 @@
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="searchTF" min="-2" pref="285" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="changeAccountBTN" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="deleteAccountBTN" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="uploadDatabaseBTN" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -77,8 +77,8 @@
                   <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                       <Component id="uploadDatabaseBTN" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                       <Component id="searchTF" alignment="3" min="-2" pref="41" max="-2" attributes="0"/>
+                      <Component id="deleteAccountBTN" alignment="0" min="-2" pref="40" max="-2" attributes="0"/>
                       <Component id="changeAccountBTN" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="jButton1" alignment="0" min="-2" pref="40" max="-2" attributes="0"/>
                   </Group>
                   <Component id="searchLBL" min="-2" pref="38" max="-2" attributes="0"/>
               </Group>
@@ -315,7 +315,7 @@
         <Property name="text" type="java.lang.String" value="usuario"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="deleteAccountBTN">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="14" style="0"/>
@@ -325,6 +325,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Eliminar cuenta"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteAccountBTNActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

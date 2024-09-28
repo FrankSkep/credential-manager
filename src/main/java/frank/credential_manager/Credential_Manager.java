@@ -1,14 +1,7 @@
 package frank.credential_manager;
 
 import frank.credential_manager.Database.DB_Chooser;
-import frank.credential_manager.Database.DB_Connection;
-import frank.credential_manager.Views.IniciarSesionPNL;
-import frank.credential_manager.Views.RegistrarPNL;
 import frank.credential_manager.Utils.Tools;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class Credential_Manager extends javax.swing.JFrame {
 
@@ -22,11 +15,7 @@ public class Credential_Manager extends javax.swing.JFrame {
         DB_Chooser.initializeDbFile(); // Inicializa base de datos
 
         // Si no existe un usuario en la db, pide registro, de lo contrario, pide autenticar
-        if (primerAcceso()) {
-            Tools.changePanel(new RegistrarPNL(), contenidoPNL);
-        } else {
-            Tools.changePanel(new IniciarSesionPNL(), contenidoPNL);
-        }
+        Tools.defineActionOnStart(contenidoPNL);
     }
 
     /**
@@ -113,23 +102,6 @@ public class Credential_Manager extends javax.swing.JFrame {
                 new Credential_Manager().setVisible(true);
             }
         });
-    }
-
-    // Verifica si es el primer acceso a la base de datos
-    public static boolean primerAcceso() {
-        String sql = "SELECT COUNT(*) FROM users";
-        try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1) == 0;
-            } else {
-                return false;
-            }
-
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

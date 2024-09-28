@@ -76,7 +76,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         currentDBLBL = new javax.swing.JLabel();
         changeAccountBTN = new javax.swing.JButton();
         currentUserLBL = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        deleteAccountBTN = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(169, 197, 192));
 
@@ -195,9 +195,14 @@ public class DashboardPNL extends javax.swing.JPanel {
         currentUserLBL.setForeground(new java.awt.Color(0, 0, 0));
         currentUserLBL.setText("usuario");
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/delete_account.png"))); // NOI18N
-        jButton1.setText("Eliminar cuenta");
+        deleteAccountBTN.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        deleteAccountBTN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/delete_account.png"))); // NOI18N
+        deleteAccountBTN.setText("Eliminar cuenta");
+        deleteAccountBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteAccountBTNActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -230,9 +235,9 @@ public class DashboardPNL extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(changeAccountBTN)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(deleteAccountBTN)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(uploadDatabaseBTN))
                             .addComponent(jScrollPane1))))
@@ -250,8 +255,8 @@ public class DashboardPNL extends javax.swing.JPanel {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(uploadDatabaseBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(changeAccountBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(deleteAccountBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(changeAccountBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(searchLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -402,6 +407,18 @@ public class DashboardPNL extends javax.swing.JPanel {
 
     }//GEN-LAST:event_changeAccountBTNActionPerformed
 
+    private void deleteAccountBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAccountBTNActionPerformed
+        int res = JOptionPane.showConfirmDialog(null, "¿Seguro que deseas eliminar la cuenta actual?", "Confirmacion", JOptionPane.YES_NO_OPTION);
+
+        if (res == JOptionPane.YES_OPTION) {
+            UserDAO userDAO = new UserDAO();
+            if (userDAO.deleteAccount(userSession.getUsuario().getId())) {
+                JOptionPane.showMessageDialog(null, "Se eliminado la cuenta y sus datos asociados.", "INFO", JOptionPane.INFORMATION_MESSAGE);
+                Tools.defineActionOnStart((JPanel) this.getParent());
+            }
+        }
+    }//GEN-LAST:event_deleteAccountBTNActionPerformed
+
     private void createAccount() {
         String[] credentials = DB_Chooser.showRegisterDialog("Registrate");
 
@@ -424,7 +441,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         UserDAO userDAO = new UserDAO();
         String[] credentials = DB_Chooser.showLoginDialog("Inicia sesion", userDAO.getAllUsernames());
 
-        if (credentials != null) {
+        if (!credentials[0].isBlank() || !credentials[1].isBlank()) {
 
             if (!credentials[0].equals(userSession.getUsuario().getUsername())) {
 
@@ -500,10 +517,10 @@ public class DashboardPNL extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> comboboxService;
     private javax.swing.JLabel currentDBLBL;
     private javax.swing.JLabel currentUserLBL;
+    private javax.swing.JButton deleteAccountBTN;
     private javax.swing.JButton deleteBTN;
     private javax.swing.JButton editBTN;
     private javax.swing.JButton filtroBTN;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel searchLBL;
     private javax.swing.JTextField searchTF;

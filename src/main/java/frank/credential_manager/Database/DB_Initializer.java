@@ -8,6 +8,9 @@ public class DB_Initializer {
 
     // Método para inicializar y crear las tablas
     public static void initializeTables(Connection conn) throws SQLException {
+        // Habilitar claves foráneas
+        conn.createStatement().execute("PRAGMA foreign_keys = ON;");
+
         // SQL para crear la tabla de usuarios
         String usersTable = "CREATE TABLE IF NOT EXISTS users ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -23,7 +26,7 @@ public class DB_Initializer {
                 + "password TEXT NOT NULL, "
                 + "category TEXT NOT NULL, "
                 + "user_id INTEGER, "
-                + "FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE)";
+                + "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             // Ejecutar las sentencias SQL para ambas tablas

@@ -2,6 +2,8 @@ package frank.credential_manager.Utils;
 
 import frank.credential_manager.Database.DB_Connection;
 import frank.credential_manager.Models.Password;
+import frank.credential_manager.Views.IniciarSesionPNL;
+import frank.credential_manager.Views.RegistrarPNL;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
@@ -53,6 +55,32 @@ public class Tools {
                 }
             }
         });
+    }
+
+    public static void defineActionOnStart(JPanel mainPanel) {
+        // Si no existe un usuario en la db, pide registro, de lo contrario, pide autenticar
+        if (primerAcceso()) {
+            Tools.changePanel(new RegistrarPNL(), mainPanel);
+        } else {
+            Tools.changePanel(new IniciarSesionPNL(), mainPanel);
+        }
+    }
+
+    // Verifica si es el primer acceso a la base de datos
+    public static boolean primerAcceso() {
+        String sql = "SELECT COUNT(*) FROM users";
+        try (Connection connection = DB_Connection.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) == 0;
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // Método para ajustar el ancho de las columnas de acuerdo al contenido
