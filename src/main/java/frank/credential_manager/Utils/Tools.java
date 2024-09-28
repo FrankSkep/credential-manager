@@ -66,6 +66,10 @@ public class Tools {
         }
     }
 
+    public static boolean areValidCredentials(String[] credentials) {
+        return credentials != null && !credentials[0].isBlank() && !credentials[1].isBlank();
+    }
+
     // Verifica si es el primer acceso a la base de datos
     public static boolean primerAcceso() {
         String sql = "SELECT COUNT(*) FROM users";

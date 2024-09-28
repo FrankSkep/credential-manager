@@ -12,7 +12,7 @@ public class RegistrarPNL extends javax.swing.JPanel {
 
     /**
      * Creates new form RegistrarPNL
-     */
+//     */
     public RegistrarPNL() {
         initComponents();
     }
@@ -162,7 +162,7 @@ public class RegistrarPNL extends javax.swing.JPanel {
 
     private void changeDbBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeDbBTNActionPerformed
         DB_Chooser.changeDatabase();
-//        Tools.defineActionOnStart((JPanel) this.getParent());
+        Tools.changePanel(DashboardPNL.getInstance(), (JPanel) this.getParent());
     }//GEN-LAST:event_changeDbBTNActionPerformed
 
 

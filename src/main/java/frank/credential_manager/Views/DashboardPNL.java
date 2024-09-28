@@ -422,7 +422,8 @@ public class DashboardPNL extends javax.swing.JPanel {
     private void createAccount() {
         String[] credentials = DB_Chooser.showRegisterDialog("Registrate");
 
-        if (!credentials[0].isBlank() || !credentials[1].isBlank()) {
+        if (Tools.areValidCredentials(credentials)) {
+
             UserDAO userDAO = new UserDAO();
             User user = userDAO.registerUser(credentials[0], credentials[1]);
 
@@ -441,7 +442,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         UserDAO userDAO = new UserDAO();
         String[] credentials = DB_Chooser.showLoginDialog("Inicia sesion", userDAO.getAllUsernames());
 
-        if (!credentials[0].isBlank() || !credentials[1].isBlank()) {
+        if (Tools.areValidCredentials(credentials)) {
 
             if (!credentials[0].equals(userSession.getUsuario().getUsername())) {
 

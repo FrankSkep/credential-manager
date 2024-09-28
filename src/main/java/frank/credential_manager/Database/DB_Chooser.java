@@ -82,7 +82,7 @@ public class DB_Chooser {
     // Método para subir o crear una nueva base de datos a la app
     public static void changeDatabase() {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Seleccionar nueva base de datos");
+        fileChooser.setDialogTitle("Selecciona o crea una base de datos");
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de base de datos (.db)", "db");
         fileChooser.setFileFilter(filter);
@@ -108,41 +108,45 @@ public class DB_Chooser {
                 // Inicializar la nueva base de datos
                 DB_Connection.initializeDatabase(dbPath);
 
-                // Si el archivo ya existe, solicitar credenciales
-                String[] credentials = showLoginDialog("Inicia sesion", userDAO.getAllUsernames());
+                // Verificar si hay usuarios registrados
+                if (userDAO.getAllUsernames().isEmpty()) {
+                    // Si no hay usuarios, permitir que el usuario registre uno nuevo
+                    String[] credentials = showRegisterDialog("Regístrate");
 
-                if (credentials != null) {
-                    String username = credentials[0];
-                    String password = credentials[1];
+                    if (Tools.areValidCredentials(credentials)) {
+                        String username = credentials[0];
+                        String password = credentials[1];
 
-                    // Autenticación con la nueva base de datos
-                    User user = userDAO.authenticateUser(username, password);
-
-                    if (user != null) {
-
-                        UserSession.getInstance().setUsuario(user); // Establecer sesion usuario activo
-
-                        // Si la autenticación es exitosa, guardar la nueva ruta
-                        ConfigFileManager.saveDatabasePath(dbPath);
-
-                        // Recargar datos de la nueva base de datos
-                        try {
-                            DashboardPNL.getInstance(); // Actualiza el dashboard
-                            JOptionPane.showMessageDialog(null, "Base de datos cambiada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Error al inicializar el dashboard: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        User newUser = userDAO.registerUser(username, password);
+                        if (newUser != null) {
+                            UserSession.getInstance().setUsuario(newUser);
+                            ConfigFileManager.saveDatabasePath(dbPath);
+                            DashboardPNL.getInstance(); // Refrescar dashboard con los nuevos datos
+                            JOptionPane.showMessageDialog(null, "Base de datos creada y usuario registrado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } else {
-                        // Si las credenciales son incorrectas, volver a cerrar la conexión
-                        DB_Connection.close();
+                        backToOldDatabase();
+                    }
+                } else {
+                    // Si hay usuarios, solicitar credenciales
+                    String[] credentials = showLoginDialog("Inicia sesión", userDAO.getAllUsernames());
 
-                        // Revertir a la base de datos anterior
-                        DB_Connection.initializeDatabase(ConfigFileManager.loadDatabasePath());
-                        try {
-                            DashboardPNL.getInstance(); // Volver a cargar el dashboard
-                        } catch (Exception e) {
+                    if (Tools.areValidCredentials(credentials)) {
+                        String username = credentials[0];
+                        String password = credentials[1];
+
+                        // Autenticación con la nueva base de datos
+                        User user = userDAO.authenticateUser(username, password);
+
+                        if (user != null) {
+                            UserSession.getInstance().setUsuario(user); // Establecer sesión usuario activo
+                            ConfigFileManager.saveDatabasePath(dbPath); // Guardar la nueva ruta
+                            DashboardPNL.getInstance(); // Actualiza el dashboard
+                            JOptionPane.showMessageDialog(null, "Base de datos cambiada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            // Si las credenciales son incorrectas, volver a cerrar la conexión
+                            backToOldDatabase();
                         }
-                        JOptionPane.showMessageDialog(null, "Credenciales incorrectas. Se mantiene en la base de datos actual.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } else {
@@ -157,18 +161,19 @@ public class DB_Chooser {
                             ConfigFileManager.saveDatabasePath(dbPath); // Guardar la ruta de la nueva base de datos
 
                             // Registrarse en la nueva base de datos
-                            String[] credentials = showRegisterDialog("Registrate");
-                            String username = credentials[0];
-                            String password = credentials[1];
+                            String[] credentials = showRegisterDialog("Regístrate");
 
-                            User newUser = userDAO.registerUser(username, password);
-                            if (newUser != null) {
-                                UserSession.getInstance().setUsuario(newUser);
+                            if (Tools.areValidCredentials(credentials)) {
+                                String username = credentials[0];
+                                String password = credentials[1];
+
+                                User newUser = userDAO.registerUser(username, password);
+                                if (newUser != null) {
+                                    UserSession.getInstance().setUsuario(newUser);
+                                    DashboardPNL.getInstance();
+                                    JOptionPane.showMessageDialog(null, "Base de datos creada y usuario registrado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                                }
                             }
-
-                            // Actualizar el dashboard
-                            DashboardPNL.getInstance();
-                            JOptionPane.showMessageDialog(null, "Base de datos creada y cambiada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             JOptionPane.showMessageDialog(null, "No se pudo crear la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
                         }
@@ -180,19 +185,36 @@ public class DB_Chooser {
         }
     }
 
+    private static void backToOldDatabase() {
+        // Si las credenciales son incorrectas, volver a cerrar la conexión
+        DB_Connection.close();
+        DB_Connection.initializeDatabase(ConfigFileManager.loadDatabasePath());
+        try {
+            DashboardPNL.getInstance(); // Volver a cargar el dashboard
+        } catch (Exception e) {
+        }
+        JOptionPane.showMessageDialog(null, "Credenciales incorrectas. Se mantiene en la base de datos actual.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     // Muestra ventana para autenticarse en la nueva base de datos
     public static String[] showLoginDialog(String msg, List<String> usuarios) {
         // Crear un ComboBox para mostrar los usuarios
         JComboBox<String> userComboBox = new JComboBox<>(usuarios.toArray(new String[0]));
         JPasswordField passwordField = new JPasswordField();
 
-        Optional<String> resultado = usuarios.stream()
-                .filter(elemento -> elemento.contains(UserSession.getInstance().getUsuario().getUsername()))
-                .findFirst();  // Obtiene el primer elemento que coincida
+        User currentUser = UserSession.getInstance().getUsuario();
+        if (currentUser != null) {
+            Optional<String> resultado = usuarios.stream()
+                    .filter(elemento -> elemento.contains(currentUser.getUsername()))
+                    .findFirst();  // Obtiene el primer elemento que coincida
 
-        // Muestra seleccionada la cuenta que usa actualmente
-        resultado.ifPresentOrElse(user -> userComboBox.setSelectedItem(resultado.get()),
-                () -> userComboBox.setSelectedIndex(0));
+            // Muestra seleccionada la cuenta que usa actualmente
+            if (resultado.isPresent()) {
+                userComboBox.setSelectedItem(resultado.get());
+            }
+        } else {
+            userComboBox.setSelectedIndex(0);
+        }
 
         Object[] message = {
             "Usuario:", userComboBox,
