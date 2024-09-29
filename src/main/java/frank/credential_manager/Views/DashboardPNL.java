@@ -22,8 +22,8 @@ public class DashboardPNL extends javax.swing.JPanel {
 
     private static DashboardPNL instance; // Instancia unica del panel
     private List<Password> passwordList; // Listado de contraseñas
-    private PasswordDAO passDAO; // DAO Password
-    private UserSession userSession; // Sesion activa
+    private final PasswordDAO passDAO; // DAO Password
+    private final UserSession userSession; // Sesion activa
 
     // Constructor privado para evitar instanciación desde fuera
     private DashboardPNL() {

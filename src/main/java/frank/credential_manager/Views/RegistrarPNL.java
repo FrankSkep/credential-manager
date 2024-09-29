@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 public class RegistrarPNL extends javax.swing.JPanel {
 
     /**
-     * Creates new form RegistrarPNL
-//     */
+     * Creates new form RegistrarPNL //
+     */
     public RegistrarPNL() {
         initComponents();
     }
