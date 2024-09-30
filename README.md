@@ -6,7 +6,7 @@ Aplicación de escritorio desarrollada con Java, Swing y SQLite, para gestionar 
 
 ### [Screenshots](screens/views.md)
 
-![Imagen](screens/2.png)
+![Imagen](screens/img4.png)
 
 ## Características
 
