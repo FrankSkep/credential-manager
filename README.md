@@ -4,6 +4,8 @@
 
 Aplicación de escritorio desarrollada con Java, Swing y SQLite, para gestionar contraseñas de forma segura. Permite a los usuarios almacenar, organizar y acceder a sus contraseñas utilizando una base de datos local con ubicación dinámica.
 
+Descarga: [Credential Manager v1.0](https://github.com/FrankSkep/Credential-Manager/releases/tag/1.0)
+
 ### [Screenshots](screens/views.md)
 
 ![Imagen](screens/img4.png)
