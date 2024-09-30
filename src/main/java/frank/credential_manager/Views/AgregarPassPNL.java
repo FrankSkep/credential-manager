@@ -15,6 +15,8 @@ public class AgregarPassPNL extends javax.swing.JPanel {
         initComponents();
         dao = PasswordDAO.getInstance();
         Tools.loadIntoCombobox(categoriaCBOX, dao.getAllCategories());
+        Tools.setKeyEventButton(saveBTN, "ENTER");
+        Tools.setKeyEventButton(volverBTN, "ESCAPE");
     }
 
     /**

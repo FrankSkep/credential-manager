@@ -4,6 +4,7 @@ import frank.credential_manager.Database.DB_Connection;
 import frank.credential_manager.Models.Password;
 import frank.credential_manager.Views.IniciarSesionPNL;
 import frank.credential_manager.Views.RegistrarPNL;
+
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
@@ -14,13 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -53,6 +48,17 @@ public class Tools {
                 } catch (Exception ex) {
                     System.out.println("Error: " + ex.toString());
                 }
+            }
+        });
+    }
+
+    public static void setKeyEventButton(JButton button, String key) {
+        // Agregar funcionalidad para que responda a la tecla Enter
+        button.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW).put(javax.swing.KeyStroke.getKeyStroke(key), "click");
+        button.getActionMap().put("click", new javax.swing.AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                button.doClick();
             }
         });
     }

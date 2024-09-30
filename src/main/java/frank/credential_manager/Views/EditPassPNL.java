@@ -19,6 +19,8 @@ public class EditPassPNL extends javax.swing.JPanel {
         initComponents();
         dao = PasswordDAO.getInstance();
         loadData(password);
+        Tools.setKeyEventButton(guardarBTN, "ENTER");
+        Tools.setKeyEventButton(backBTN, "ESCAPE");
     }
 
     /**

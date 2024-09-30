@@ -2,12 +2,16 @@ package frank.credential_manager.Database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Getter;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DB_Connection {
 
     private static HikariDataSource dataSource;
+    
+    @Getter
     private static String databasePath; // Ruta dinámica de la base de datos
 
     // Método para inicializar la base de datos con la ruta dinámica
@@ -43,10 +47,4 @@ public class DB_Connection {
             dataSource.close();
         }
     }
-
-    // Obtener ruta de la base de datos en uso
-    public static String getDatabasePath() {
-        return databasePath;
-    }
-
 }

@@ -8,7 +8,9 @@ import frank.credential_manager.Models.Password;
 import frank.credential_manager.Database.DB_Chooser;
 import frank.credential_manager.Models.User;
 import frank.credential_manager.Utils.Tools;
+
 import java.awt.Font;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,6 +79,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         changeAccountBTN = new javax.swing.JButton();
         currentUserLBL = new javax.swing.JLabel();
         deleteAccountBTN = new javax.swing.JButton();
+        exitBTN = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(169, 197, 192));
 
@@ -174,6 +177,7 @@ public class DashboardPNL extends javax.swing.JPanel {
         });
 
         searchLBL.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        searchLBL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/search.png"))); // NOI18N
         searchLBL.setText("  ");
 
         currentDBLBL.setBackground(new java.awt.Color(255, 255, 255));
@@ -201,6 +205,16 @@ public class DashboardPNL extends javax.swing.JPanel {
         deleteAccountBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteAccountBTNActionPerformed(evt);
+            }
+        });
+
+        exitBTN.setBackground(new java.awt.Color(255, 102, 102));
+        exitBTN.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
+        exitBTN.setForeground(new java.awt.Color(0, 0, 0));
+        exitBTN.setText("X");
+        exitBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitBTNActionPerformed(evt);
             }
         });
 
@@ -232,8 +246,8 @@ public class DashboardPNL extends javax.swing.JPanel {
                                 .addComponent(comboboxCateg, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(searchLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(changeAccountBTN)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -241,26 +255,34 @@ public class DashboardPNL extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(uploadDatabaseBTN))
                             .addComponent(jScrollPane1))))
-                .addGap(72, 72, 72))
+                .addGap(24, 24, 24)
+                .addComponent(exitBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(currentUserLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(currentDBLBL))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(13, 13, 13)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(currentUserLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(currentDBLBL)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(exitBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(deleteAccountBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(uploadDatabaseBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(deleteAccountBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(changeAccountBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(searchLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(searchLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(editBTN, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -419,6 +441,10 @@ public class DashboardPNL extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_deleteAccountBTNActionPerformed
 
+    private void exitBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBTNActionPerformed
+        exit();
+    }//GEN-LAST:event_exitBTNActionPerformed
+
     private void createAccount() {
         String[] credentials = DB_Chooser.showRegisterDialog("Registrate");
 
@@ -490,7 +516,6 @@ public class DashboardPNL extends javax.swing.JPanel {
 
     // Inicializa la tabla y evento del buscador
     private void initializeOnce() {
-        Tools.setImageLabel(searchLBL, "src/main/resources/Icons/search.png");
         configureTable();
 
         searchTF.getDocument().addDocumentListener(new DocumentListener() {
@@ -511,6 +536,23 @@ public class DashboardPNL extends javax.swing.JPanel {
         });
     }
 
+    private void exit() {
+        int res = JOptionPane.showConfirmDialog(null, "¿Seguro que deseas salir?", "Confirmacion", JOptionPane.YES_NO_OPTION);
+
+        if (res == JOptionPane.YES_OPTION) {
+
+            try {
+                Connection connection = DB_Connection.getConnection();
+                if (connection != null) {
+                    connection.close();
+                }
+                System.exit(0);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al cerrar recursos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBTN;
     private javax.swing.JButton changeAccountBTN;
@@ -521,6 +563,7 @@ public class DashboardPNL extends javax.swing.JPanel {
     private javax.swing.JButton deleteAccountBTN;
     private javax.swing.JButton deleteBTN;
     private javax.swing.JButton editBTN;
+    private javax.swing.JButton exitBTN;
     private javax.swing.JButton filtroBTN;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel searchLBL;

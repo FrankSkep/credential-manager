@@ -5,8 +5,8 @@ import frank.credential_manager.DAO.UserDAO;
 import frank.credential_manager.Database.DB_Chooser;
 import frank.credential_manager.Models.User;
 import frank.credential_manager.Utils.Tools;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+
+import javax.swing.*;
 
 public class IniciarSesionPNL extends javax.swing.JPanel {
 
@@ -18,6 +18,14 @@ public class IniciarSesionPNL extends javax.swing.JPanel {
 
         Tools.loadIntoCombobox(usersCBOX, userDAO.getAllUsernames());
         usersCBOX.setSelectedIndex(0);
+
+        Tools.setKeyEventButton(iniciarBTN, "ENTER");
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                passTF.requestFocusInWindow();
+            }
+        });
     }
 
     /**
