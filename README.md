@@ -28,3 +28,9 @@ Descarga: [Credential Manager v1.0](https://github.com/FrankSkep/Credential-Mana
   - SQLite JDBC
   - HikariCP (Utilizada para el pool de conexiones a la base de datos)
   - Lombok (Utilizada para reducir codigo repetitivo mediante anotaciones)
+
+## Licencia
+
+Este proyecto, **credential-manager**, tiene la licencia [GNU Affero General Public License v3.0] (LICENCIA).
+
+© 2024 FrankSkep. Usted es libre de utilizar, modificar y distribuir este software según los términos de GPL-3.0. Para obtener más detalles, consulte el archivo completo [LICENCIA](LICENSE).
